@@ -2,9 +2,9 @@
 <html lang="en">
 <head>
         <meta charset="utf-8" />
-        <title>Maja Frydrychowicz - mozilla</title>
+        <title>Maja Z. Frydrychowicz - mozilla</title>
         <link rel="stylesheet" href="http://majazf.ca/blog/theme/css/main.css" />
-        <link href="http://majazf.ca/blog/feeds/all.atom.xml" type="application/atom+xml" rel="alternate" title="Maja Frydrychowicz Atom Feed" />
+        <link href="http://majazf.ca/blog/feeds/all.atom.xml" type="application/atom+xml" rel="alternate" title="Maja Z. Frydrychowicz Atom Feed" />
 
         <!--[if IE]>
             <script src="http://html5shiv.googlecode.com/svn/trunk/html5.js"></script>
@@ -14,9 +14,10 @@
 <body id="index" class="home">
 <!---->
         <header id="banner" class="body">
-                <h1><a href="http://majazf.ca/blog/">Maja Frydrychowicz </a></h1>
+                <h1><a href="http://majazf.ca/blog/">Maja Z. Frydrychowicz </a></h1>
                 <nav><ul>
                     <li><a href="http://majazf.ca/">majazf.ca</a></li>
+                    <li><a href="http://majazf.ca/blog/pages/about-maja.html">About</a></li>
                     <li><a href="http://majazf.ca/blog/pages/contact-maja.html">Contact</a></li>
                     <li><a href="http://majazf.ca/blog/archives.html">Archives</a></li>
 
@@ -25,24 +26,51 @@
 
             <aside id="featured" class="body">
                 <article>
-                    <h1 class="entry-title"><a href="http://majazf.ca/blog/remote-work.html">Working Remotely is... Hard? Different? Strange?</a></h1>
-                    <p>My internship with Mozilla involves work within a team whose members are located around the world and not where I am. Some are Mozilla employees or maybe contractors, some are interns like me, some might be volunteers. The key point is that it's not just me with my mentor, focused on our own area: I need to find my voice in this in group of people, and that's where working remotely gets hard. </p>
-<p>My very initial, tentative impressions of full-time, remote work is that it's not bad, but it takes more getting used to than I expected. I've worked from home a lot, as a developer and as a teacher, but I've only ever collaborated on projects with people that I spend time with "at the office" or that I meet with in person from time to time. My current full-time, remote status makes me realize that chatting and getting to know coworkers between bursts of productivity is pretty valuable! Crazy! Time for me to refer you to <a href="http://theoatmeal.com/comics/working_home">Why working from home is both awesome and horrible</a>.</p><footer class="post-info">
-        <abbr class="published" title="2014-05-23T15:30:00">
-                Published: 23 May 2014
+                    <h1 class="entry-title"><a href="http://majazf.ca/blog/bugzilla-github.html">Project Management at Mozilla</a></h1>
+                    <p>One of the most interesting aspects of my OPW internship is learning how contributions and planning are managed in Mozilla projects. Mozilla is known for giant projects like Firefox, but it also has lots of supporting tools and websites. All projects, big and small, are managed using Bugzilla and possibly a mix of other tools, depending on the project team. My observations are based mostly on one project that I've become familiar with: <a href="https://github.com/mozilla/oneanddone">One and Done</a>.</p>
+<h1>Bugzilla</h1>
+<p><a href="https://bugzilla.mozilla.org/">Bugzilla</a> is used to describe "bugs" and track their status. A "bug" in Bugzilla in not necessarily a problem that needs to be fixed: it can be feature planned by the core project team, a suggestion from a community member, a representation of a project milestone or even a request for new office furniture for a team member. ;)</p>
+<p>Ideally, all the discussion about a bug takes place publicly in its Comments section on Bugzilla so that everyone can see how the bug is evolving. (Not all discussion is public: bugs that relate to a security vulnerability can only be viewed by authorized users.)</p>
+<p>If the bug represents a new feature, people might use the Comments section to narrow down or adjust requirements, request clarification or feedback, etc. </p>
+<ul>
+<li><a href="https://bugzilla.mozilla.org/show_bug.cgi?id=1020981">Example 1: Profile button</a>  </li>
+<li><a href="https://bugzilla.mozilla.org/show_bug.cgi?id=1005082">Example 2: Front page header text</a></li>
+</ul>
+<p>Bugzilla is also where developers submit solutions for <a href="https://developer.mozilla.org/en-US/docs/Mozilla/Developer_guide/How_to_Submit_a_Patch#Getting_the_patch_reviewed">code review</a>. </p>
+<h1>Bugzilla with Github</h1>
+<p>Like many other Mozilla projects, One and Done has its repository hosted on Github. When a developer makes a pull request on Github, that PR should refer to the Bugzilla bug ID and it should be <a href="http://globau.wordpress.com/2013/10/21/github-pull-requests-and-bugzilla/">attached to the bug</a> in Bugzilla with a request for review. (<a href="https://github.com/mozilla/oneanddone/pull/124">Example 3: Completed Tasks PR</a>.) Detailed discussion and feedback about the code takes place in the pull request on Github, but a summary thereof is always included in Bugzilla, often by the reviewer. Github Issues are not used at all since Bugzilla bugs fulfill their role. </p>
+<hr />
+<p>Since there are so many tools available to describe and communicate about project progress, it's easy to have project information spread around in many different places, where it may be overlooked or become out-of-date. In the case of One and Done, although there is a project wiki, a Github repo and a Kanban board, all the key project data is in Bugzilla or linked-to from there. As a contributor to the project, there's really only one place I need to look for definitive information, and that's Bugzilla. </p><footer class="post-info">
+        <abbr class="published" title="2014-06-10T22:41:00">
+                Published: 10 June 2014
         </abbr>
 
         <address class="vcard author">
                 By                         <a class="url fn" href="http://majazf.ca/blog/author/maja-z-frydrychowicz.html">Maja Z. Frydrychowicz</a>
         </address>
 <p>In <a href="http://majazf.ca/blog/category/misc.html">misc</a>. </p>
-<p>tags: <a href="http://majazf.ca/blog/tag/opw.html">opw</a> <a href="http://majazf.ca/blog/tag/mozilla.html">mozilla</a> <a href="http://majazf.ca/blog/tag/foss.html">foss</a> <a href="http://majazf.ca/blog/tag/feelings.html">feelings</a> </p>
+<p>tags: <a href="http://majazf.ca/blog/tag/mozilla.html">mozilla</a> <a href="http://majazf.ca/blog/tag/foss.html">foss</a> </p>
 </footer><!-- /.post-info -->                </article>
             </aside><!-- /#featured -->
                 <section id="content" class="body">
                     <h1>Other articles</h1>
 
                     <ol id="posts-list" class="hfeed">
+
+            <li><article> <!-- class="hentry" -->
+                <header>
+                    <p><a href="http://majazf.ca/blog/remote-work.html" rel="bookmark"
+                           title="Permalink to Working Remotely is... Hard? Different? Strange?">Working Remotely is... Hard? Different? Strange?</a></p>
+                </header>
+
+                <!--
+                <div class="entry-content">
+                 include 'article_infos.html' Missing \{\%
+                 article.summary Missing \{\{
+                <a class="readmore" href="http://majazf.ca/blog/remote-work.html">read more</a>
+                </div> -->
+                <!-- /.entry-content -->
+            </article></li>
 
             <li><article> <!-- class="hentry" -->
                 <header>
