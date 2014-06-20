@@ -4,8 +4,8 @@
 &lt;p&gt;I've been helping out with the development of One and Done for a few weeks now, and it's great fun. The tool aims to connect new Mozilla contributors to specific tasks according to their interests, skills and available time. It also allows you to keep a record of your accomplishments at Mozilla. We have a lot more planned for it, and if you know Python and want to learn Django, you can help us add new features.&lt;/p&gt;
 &lt;h1&gt;What to Expect at the Hacker Lounge&lt;/h1&gt;
 &lt;p&gt;We have two main activities that we'll be helping out with. &lt;/p&gt;
-&lt;h2&gt;Use One and Done to Make Your First Contributions to Mozilla&lt;/h2&gt;
-&lt;p&gt;Dive right into your first Mozilla contribution. You'll create a One and Done profile, pick some tasks that interest you and record your progress. If you run into any snags, we'll be there to help you out or show you how to engage with project teams through IRC, mailing lists and so on. &lt;/p&gt;
+&lt;h2&gt;Use One and Done to Make Contributions to Mozilla&lt;/h2&gt;
+&lt;p&gt;Dive right into your (first?) Mozilla contribution. You'll create a One and Done profile, pick some tasks that interest you and record your progress. If you run into any snags, we'll be there to help you out or show you how to engage with project teams through IRC, mailing lists and so on. &lt;/p&gt;
 &lt;p&gt;If you have suggestions for how to make One and Done more useful or if you encounter a bug in the tool, we'll show you how to use Bugzilla to share your feedback with the One and Done team.&lt;/p&gt;
 &lt;h2&gt;Work on One and Done as a Python Developer&lt;/h2&gt;
 &lt;p&gt;There's lots to do if you want to work on One and Done itself. It's essentially a Django project and a nice example of how web development is done at Mozilla. The &lt;a href="https://github.com/mozilla/oneanddone"&gt;One and Done source code&lt;/a&gt; is hosted on Github.&lt;/p&gt;
