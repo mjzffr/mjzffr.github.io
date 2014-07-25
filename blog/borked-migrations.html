@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
         <meta charset="utf-8" />
-        <title>Maja Z. Frydrychowicz - Maja Z. Frydrychowicz</title>
+        <title>Database Migrations ("You know nothing, Version Control.")</title>
         <link rel="stylesheet" href="http://majazf.ca/blog/theme/css/main.css" />
         <link href="http://majazf.ca/blog/feeds/all.atom.xml" type="application/atom+xml" rel="alternate" title="Maja Z. Frydrychowicz Atom Feed" />
 
@@ -22,11 +22,16 @@
 
                 </ul></nav>
         </header><!-- /#banner -->
+<section id="content" class="body">
+  <article>
+    <header>
+      <h1 class="entry-title">
+        <a href="http://majazf.ca/blog/borked-migrations.html" rel="bookmark"
+           title="Permalink to Database Migrations ("You know nothing, Version Control.")">Database Migrations ("You know nothing, Version Control.")</a></h1>
+    </header>
 
-            <aside id="featured" class="body">
-                <article>
-                    <h1 class="entry-title"><a href="http://majazf.ca/blog/borked-migrations.html">Database Migrations ("You know nothing, Version Control.")</a></h1>
-                    <p>This is the story of how I rediscovered what version control doesn't do for you. Sure, I understand that git doesn't track what's in my project's local database, but to understand is one thing and to <em>feel in your heart forever</em> is another. In short, learning from mistakes and accidents is the greatest!</p>
+    <div class="entry-content">
+      <p>This is the story of how I rediscovered what version control doesn't do for you. Sure, I understand that git doesn't track what's in my project's local database, but to understand is one thing and to <em>feel in your heart forever</em> is another. In short, learning from mistakes and accidents is the greatest!</p>
 <p>So, I've been working on a Django project and as the project acquires new features, the database schema changes here and there. Changing the database from one schema to another and possibly moving data between tables is called a <em>migration</em>. To manage database migrations, we use <a href="http://south.aeracode.org/">South</a>, which is sort of integrated into the project's <code>manage.py</code> script. (This is because we're really using <a href="https://github.com/mozilla/playdoh">playdoh</a>, Mozilla's augmented, specially-configured flavour of Django.)</p>
 <p>South is lovely. Whenever you change the model definitions in your Django project, you ask South to generate Python code that defines the corresponding schema migration, which you can customize as needed. We'll call this Python code a <em>migration file</em>. To actually update your database with the schema migration, you feed the migration file to <code>manage.py migrate</code>.</p>
 <p>These migration files are safely stored in your git repository, so your project has a history of database changes <em>that you can replay backward and forward</em>. For example, let's say you're working in a different repository branch on a new feature for which you've changed the database schema a bit. Whenever you switch to the feature branch <strong>you must remember</strong> to apply your new database migration (migrate forward). Whenever you switch back to master <strong>you must remember</strong> to migrate backward to the database schema expected by the code in master. <strong>Git doesn't know which migration your database should be at.</strong> Sometimes I'm distracted and I forget. :(</p>
@@ -99,7 +104,8 @@
 <span class="nv">$ </span>git checkout master
 <span class="c"># Sync the database and migrate all the way forward using the most up-to-date migrations.</span>
 <span class="nv">$ </span>./manage.py syncdb <span class="o">&amp;&amp;</span> ./manage.py migrate
-</pre></div><footer class="post-info">
+</pre></div>
+<footer class="post-info">
         <abbr class="published" title="2014-07-04T18:00:00">
                 Published: 04 July 2014
         </abbr>
@@ -112,89 +118,10 @@
                 By                         <a class="url fn" href="http://majazf.ca/blog/author/maja-z-frydrychowicz.html">Maja Z. Frydrychowicz</a>
         </address>
 <p>tags: <a href="http://majazf.ca/blog/tag/mozilla.html">mozilla</a> <a href="http://majazf.ca/blog/tag/foss.html">foss</a> <a href="http://majazf.ca/blog/tag/opw.html">opw</a> <a href="http://majazf.ca/blog/tag/south.html">south</a> <a href="http://majazf.ca/blog/tag/git.html">git</a> <a href="http://majazf.ca/blog/tag/database.html">database</a> <a href="http://majazf.ca/blog/tag/django.html">django</a> </p>
-</footer><!-- /.post-info -->                </article>
-            </aside><!-- /#featured -->
-                <section id="content" class="body">
-                    <h1>Other articles</h1>
+</footer><!-- /.post-info -->    </div><!-- /.entry-content -->
 
-                    <ol id="posts-list" class="hfeed">
-
-            <li><article> <!-- class="hentry" -->
-                <header>
-                    <p><a href="http://majazf.ca/blog/osb14.html" rel="bookmark"
-                           title="Permalink to Open Source Bridge 2014">Open Source Bridge 2014</a></p>
-                </header>
-
-                <!--
-                <div class="entry-content">
-                 include 'article_infos.html' Missing \{\%
-                 article.summary Missing \{\{
-                <a class="readmore" href="http://majazf.ca/blog/osb14.html">read more</a>
-                </div> -->
-                <!-- /.entry-content -->
-            </article></li>
-
-            <li><article> <!-- class="hentry" -->
-                <header>
-                    <p><a href="http://majazf.ca/blog/one-and-done-osbrige.html" rel="bookmark"
-                           title="Permalink to "One and Done" comes to Open Source Bridge 2014!">"One and Done" comes to Open Source Bridge 2014!</a></p>
-                </header>
-
-                <!--
-                <div class="entry-content">
-                 include 'article_infos.html' Missing \{\%
-                 article.summary Missing \{\{
-                <a class="readmore" href="http://majazf.ca/blog/one-and-done-osbrige.html">read more</a>
-                </div> -->
-                <!-- /.entry-content -->
-            </article></li>
-
-            <li><article> <!-- class="hentry" -->
-                <header>
-                    <p><a href="http://majazf.ca/blog/bugzilla-github.html" rel="bookmark"
-                           title="Permalink to Project Management at Mozilla">Project Management at Mozilla</a></p>
-                </header>
-
-                <!--
-                <div class="entry-content">
-                 include 'article_infos.html' Missing \{\%
-                 article.summary Missing \{\{
-                <a class="readmore" href="http://majazf.ca/blog/bugzilla-github.html">read more</a>
-                </div> -->
-                <!-- /.entry-content -->
-            </article></li>
-
-            <li><article> <!-- class="hentry" -->
-                <header>
-                    <p><a href="http://majazf.ca/blog/remote-work.html" rel="bookmark"
-                           title="Permalink to Working Remotely is... Hard? Different? Strange?">Working Remotely is... Hard? Different? Strange?</a></p>
-                </header>
-
-                <!--
-                <div class="entry-content">
-                 include 'article_infos.html' Missing \{\%
-                 article.summary Missing \{\{
-                <a class="readmore" href="http://majazf.ca/blog/remote-work.html">read more</a>
-                </div> -->
-                <!-- /.entry-content -->
-            </article></li>
-
-            <li><article> <!-- class="hentry" -->
-                <header>
-                    <p><a href="http://majazf.ca/blog/applying-to-opw.html" rel="bookmark"
-                           title="Permalink to Dive In! Applying to the FOSS Outreach Program for Women">Dive In! Applying to the FOSS Outreach Program for Women</a></p>
-                </header>
-
-                <!--
-                <div class="entry-content">
-                 include 'article_infos.html' Missing \{\%
-                 article.summary Missing \{\{
-                <a class="readmore" href="http://majazf.ca/blog/applying-to-opw.html">read more</a>
-                </div> -->
-                <!-- /.entry-content -->
-            </article></li>
-                </ol><!-- /#posts-list -->
-                </section><!-- /#content -->
+  </article>
+</section>
         <section id="extras" class="body">
                 <div class="social">
                         <!--<h2>social</h2>-->

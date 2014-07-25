@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom"><title>Maja Z. Frydrychowicz</title><link href="http://majazf.ca/blog/" rel="alternate"></link><link href="http://majazf.ca/blog/feeds/git.atom.xml" rel="self"></link><id>http://majazf.ca/blog/</id><updated>2014-07-25T00:00:00-04:00</updated><entry><title>Database Migrations ("You know nothing, Version Control.")</title><link href="http://majazf.ca/blog/borked-migrations.html" rel="alternate"></link><updated>2014-07-25T00:00:00-04:00</updated><author><name>Maja Z. Frydrychowicz</name></author><id>tag:majazf.ca,2014-07-04:blog/borked-migrations.html</id><summary type="html">&lt;p&gt;This is the story of how I rediscovered what version control doesn't do for you. Sure, I understand that git doesn't track what's in my project's local database, but to understand is one thing and to &lt;em&gt;feel in your heart forever&lt;/em&gt; is another. In short, learning from mistakes and accidents is the greatest!&lt;/p&gt;
+&lt;p&gt;So, I've been working on a Django project and as the project acquires new features, the database schema changes here and there. Changing the database from one schema to another and possibly moving data between tables is called a &lt;em&gt;migration&lt;/em&gt;. To manage database migrations, we use &lt;a href="http://south.aeracode.org/"&gt;South&lt;/a&gt;, which is sort of integrated into the project's &lt;code&gt;manage.py&lt;/code&gt; script. (This is because we're really using &lt;a href="https://github.com/mozilla/playdoh"&gt;playdoh&lt;/a&gt;, Mozilla's augmented, specially-configured flavour of Django.)&lt;/p&gt;
+&lt;p&gt;South is lovely. Whenever you change the model definitions in your Django project, you ask South to generate Python code that defines the corresponding schema migration, which you can customize as needed. We'll call this Python code a &lt;em&gt;migration file&lt;/em&gt;. To actually update your database with the schema migration, you feed the migration file to &lt;code&gt;manage.py migrate&lt;/code&gt;.&lt;/p&gt;
+&lt;p&gt;These migration files are safely stored in your git repository, so your project has a history of database changes &lt;em&gt;that you can replay backward and forward&lt;/em&gt;. For example, let's say you're working in a different repository branch on a new feature for which you've changed the database schema a bit. Whenever you switch to the feature branch &lt;strong&gt;you must remember&lt;/strong&gt; to apply your new database migration (migrate forward). Whenever you switch back to master &lt;strong&gt;you must remember&lt;/strong&gt; to migrate backward to the database schema expected by the code in master. &lt;strong&gt;Git doesn't know which migration your database should be at.&lt;/strong&gt; Sometimes I'm distracted and I forget. :(&lt;/p&gt;
+&lt;p&gt;As always, it gets more interesting when you have project collaborators because they might push changes to migration files and &lt;strong&gt;you must pay attention and remember&lt;/strong&gt; to actually apply these migrations in the right order. We will examine one such scenario in detail.&lt;/p&gt;
+&lt;h1&gt;Adventures with Overlooked Database Migrations&lt;/h1&gt;
+&lt;p&gt;Let's call the actors Sparkles and Rainbows. Sparkles and Rainbows are both contributing to the same project and so they each regularly push or pull from the same "upstream" git repository. However, they each use their own local database for development. As far as the database goes, git is only tracking South migration files. Here is our scenario.&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;Sparkles pushes Migration Files 1, 2, 3 to upstream and applies these migrations to their local db in that order. &lt;/li&gt;
+&lt;li&gt;Rainbows pulls Migration Files 1, 2, 3 from upstream and applies them to their local db in that order.&lt;blockquote&gt;
+&lt;p&gt;All is well so far. The trouble is about to start.&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;/li&gt;
+&lt;li&gt;Sparkles reverses Migration 3 in their local database (backward migration to Migration 2) and pushes a delete of the Migration 3 file to upstream.&lt;/li&gt;
+&lt;li&gt;Rainbows pulls from upstream: the Migration 3 file no longer exists at &lt;code&gt;HEAD&lt;/code&gt; &lt;strong&gt;but it must also be reversed in the local db&lt;/strong&gt;! Alas, Rainbows does not perform the backward migration. :(&lt;/li&gt;
+&lt;li&gt;Life goes on and Sparkles now adds Migration Files 4 and 5, applies the migrations locally and pushes the files to upstream. &lt;/li&gt;
+&lt;li&gt;Rainbows happily pulls Migrations Files 4 and 5 and applies them to their local db. &lt;blockquote&gt;
+&lt;p&gt;Notice that Sparkles' migration history is now 1-2-4-5 but Rainbows' migration history is 1-2-3-4-5, but 3 is nolonger part of the up-to-date project! &lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;At some point Rainbows will encounter Django or South errors, depending on the nature of the migrations, because the database doesn't match the expected schema. No worries, though, it's git, it's South: you can go back in time and fix things.&lt;/p&gt;
+&lt;p&gt;I was recently in Rainbows' position. I finally noticed that something was wrong with my database when South started refusing to apply the latest migration from upstream, telling me "Sorry! I can't drop table TaskArea, it doesn't exist!" &lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span class="n"&gt;tasks&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt;&lt;span class="mi"&gt;0011&lt;/span&gt;&lt;span class="n"&gt;_auto__del_taskarea__del_field_task_area__add_field_taskkeyword_name&lt;/span&gt;
+&lt;span class="n"&gt;FATAL&lt;/span&gt; &lt;span class="n"&gt;ERROR&lt;/span&gt; &lt;span class="o"&gt;-&lt;/span&gt; &lt;span class="n"&gt;The&lt;/span&gt; &lt;span class="n"&gt;following&lt;/span&gt; &lt;span class="n"&gt;SQL&lt;/span&gt; &lt;span class="n"&gt;query&lt;/span&gt; &lt;span class="n"&gt;failed&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt; &lt;span class="n"&gt;DROP&lt;/span&gt; &lt;span class="n"&gt;TABLE&lt;/span&gt; &lt;span class="n"&gt;tasks_taskarea&lt;/span&gt; &lt;span class="n"&gt;CASCADE&lt;/span&gt;&lt;span class="o"&gt;;&lt;/span&gt;
+&lt;span class="n"&gt;The&lt;/span&gt; &lt;span class="n"&gt;error&lt;/span&gt; &lt;span class="n"&gt;was&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt; &lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="mi"&gt;1051&lt;/span&gt;&lt;span class="o"&gt;,&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;Unknown table &amp;#39;tasks_taskarea&amp;#39;&amp;quot;&lt;/span&gt;&lt;span class="o"&gt;)&lt;/span&gt;
+&lt;span class="o"&gt;&amp;gt;&lt;/span&gt;&lt;span class="n"&gt;snip&lt;/span&gt;
+&lt;span class="n"&gt;KeyError&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;The model &amp;#39;taskarea&amp;#39; from the app &amp;#39;tasks&amp;#39; is not available in this migration.&amp;quot;&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;In my instance of the Sparkles-Rainbows story, Migration 3 and Migration 5 both drop the TaskArea table; I'm trying to apply Migration 5, and South  grumbles in response because I had never reversed Migration 3. As far as South knows, there's no such thing as a TaskArea table. &lt;/p&gt;
+&lt;p&gt;Let's take a look at my migration history, which is conveniently stored in the database itself:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span class="k"&gt;select&lt;/span&gt; &lt;span class="n"&gt;migration&lt;/span&gt; &lt;span class="k"&gt;from&lt;/span&gt; &lt;span class="n"&gt;south_migrationhistory&lt;/span&gt; &lt;span class="k"&gt;where&lt;/span&gt; &lt;span class="n"&gt;app_name&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;tasks&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;The output is shown below. The lines of interest are &lt;code&gt;0010_auth__del&lt;/code&gt; and &lt;code&gt;0010_auto__chg&lt;/code&gt;; I'm trying to apply migration &lt;code&gt;0011&lt;/code&gt; but I can't, because it's the same migration as &lt;code&gt;0010_auto__del&lt;/code&gt;, which should have been reversed a few commits ago. &lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span class="o"&gt;+------------------------------------------------------------------------------+&lt;/span&gt;
+&lt;span class="o"&gt;|&lt;/span&gt;  &lt;span class="n"&gt;migration&lt;/span&gt;                                                                   &lt;span class="o"&gt;|&lt;/span&gt;
+&lt;span class="o"&gt;+------------------------------------------------------------------------------+&lt;/span&gt;
+&lt;span class="o"&gt;|&lt;/span&gt;  &lt;span class="mo"&gt;0001&lt;/span&gt;&lt;span class="n"&gt;_initial&lt;/span&gt;                                                                &lt;span class="o"&gt;|&lt;/span&gt;
+&lt;span class="o"&gt;|&lt;/span&gt;  &lt;span class="mo"&gt;0002&lt;/span&gt;&lt;span class="n"&gt;_auto__add_feedback&lt;/span&gt;                                                     &lt;span class="o"&gt;|&lt;/span&gt;
+&lt;span class="o"&gt;|&lt;/span&gt;  &lt;span class="mo"&gt;0003&lt;/span&gt;&lt;span class="n"&gt;_auto__del_field_task_allow_multiple_finishes&lt;/span&gt;                           &lt;span class="o"&gt;|&lt;/span&gt;
+&lt;span class="o"&gt;|&lt;/span&gt;  &lt;span class="mo"&gt;0004&lt;/span&gt;&lt;span class="n"&gt;_auto__add_field_task_is_draft&lt;/span&gt;                                          &lt;span class="o"&gt;|&lt;/span&gt;
+&lt;span class="o"&gt;|&lt;/span&gt;  &lt;span class="mo"&gt;0005&lt;/span&gt;&lt;span class="n"&gt;_auto__del_field_feedback_task__del_field_feedback_user__add_field_feed&lt;/span&gt; &lt;span class="o"&gt;|&lt;/span&gt;
+&lt;span class="o"&gt;|&lt;/span&gt;  &lt;span class="mo"&gt;0006&lt;/span&gt;&lt;span class="n"&gt;_auto__add_field_task_creator__add_field_taskarea_creator&lt;/span&gt;               &lt;span class="o"&gt;|&lt;/span&gt;
+&lt;span class="o"&gt;|&lt;/span&gt;  &lt;span class="mo"&gt;0007&lt;/span&gt;&lt;span class="n"&gt;_auto__add_taskkeyword__add_tasktype__add_taskteam__add_taskproject__ad&lt;/span&gt; &lt;span class="o"&gt;|&lt;/span&gt;
+&lt;span class="o"&gt;|&lt;/span&gt;  &lt;span class="mo"&gt;000&lt;/span&gt;&lt;span class="mi"&gt;8&lt;/span&gt;&lt;span class="n"&gt;_task_data&lt;/span&gt;                                                              &lt;span class="o"&gt;|&lt;/span&gt;
+&lt;span class="o"&gt;|&lt;/span&gt;  &lt;span class="mo"&gt;000&lt;/span&gt;&lt;span class="mi"&gt;9&lt;/span&gt;&lt;span class="n"&gt;_auto__chg_field_task_team&lt;/span&gt;                                              &lt;span class="o"&gt;|&lt;/span&gt;
+&lt;span class="o"&gt;|&lt;/span&gt;  &lt;span class="mo"&gt;0010&lt;/span&gt;&lt;span class="n"&gt;_auto__del_taskarea__del_field_task_area__add_field_taskkeyword_name&lt;/span&gt;    &lt;span class="o"&gt;|&lt;/span&gt;
+&lt;span class="o"&gt;|&lt;/span&gt;  &lt;span class="mo"&gt;0010&lt;/span&gt;&lt;span class="n"&gt;_auto__chg_field_taskattempt_user__chg_field_task_creator__chg_field_ta&lt;/span&gt; &lt;span class="o"&gt;|&lt;/span&gt;
+&lt;span class="o"&gt;+------------------------------------------------------------------------------+&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;I want to migrate backwards until &lt;code&gt;0009&lt;/code&gt;, but I can't do that directly because the migration file for &lt;code&gt;0010_auto__del&lt;/code&gt; is not part of &lt;code&gt;HEAD&lt;/code&gt; anymore, just like Migration 3 in the story of Sparkles and Rainbows, so South doesn't know what to do. However, that migration does exist in a previous commit, so let's go back in time.&lt;/p&gt;
+&lt;p&gt;I figure out which commit added the migration I need to reverse:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span class="c"&gt;# Display commit log along with names of files affected by each commit. &lt;/span&gt;
+&lt;span class="c"&gt;# Once in less, I searched for &amp;#39;0010_auto__del&amp;#39; to get to the right commit.&lt;/span&gt;
+&lt;span class="nv"&gt;$ &lt;/span&gt;git log --name-status | less
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;What that key information, the following sequence of commands tidies everything up:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span class="c"&gt;# Switch to the commit that added migration 0010_auto__del&lt;/span&gt;
+&lt;span class="nv"&gt;$ &lt;/span&gt;git checkout e67fe32c
+&lt;span class="c"&gt;# Migrate backward to a happy migration; I chose 0008 to be safe. &lt;/span&gt;
+&lt;span class="c"&gt;# ./manage.py migrate [appname] [migration]&lt;/span&gt;
+&lt;span class="nv"&gt;$ &lt;/span&gt;./manage.py migrate oneanddone.tasks 0008
+&lt;span class="nv"&gt;$ &lt;/span&gt;git checkout master
+&lt;span class="c"&gt;# Sync the database and migrate all the way forward using the most up-to-date migrations.&lt;/span&gt;
+&lt;span class="nv"&gt;$ &lt;/span&gt;./manage.py syncdb &lt;span class="o"&gt;&amp;amp;&amp;amp;&lt;/span&gt; ./manage.py migrate
+&lt;/pre&gt;&lt;/div&gt;</summary><category term="mozilla"></category><category term="foss"></category><category term="opw"></category><category term="south"></category><category term="git"></category><category term="database"></category><category term="django"></category></entry></feed>
