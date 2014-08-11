@@ -3,7 +3,7 @@
 <head>
         <meta charset="utf-8" />
         <title>Maja Z. Frydrychowicz - git</title>
-        <link rel="stylesheet" href="http://www.majazf.ca/blog/theme/css/main.css" />
+        <link rel="stylesheet" href="../theme/css/main.css" />
         <link href="http://www.majazf.ca/blog/feeds/all.atom.xml" type="application/atom+xml" rel="alternate" title="Maja Z. Frydrychowicz Atom Feed" />
 
         <!--[if IE]>
@@ -16,16 +16,16 @@
         <header id="banner" class="body">
                 <h1><a href="http://www.majazf.ca/">Maja Z. Frydrychowicz </a></h1>
                 <nav><ul>
-                    <li><a href="http://www.majazf.ca/blog/pages/about-maja.html">Details</a></li>
-                    <li><a href="http://www.majazf.ca/blog/pages/contact-maja.html">Contact</a></li>
-                    <li><a href="http://www.majazf.ca/blog/archives.html">Archives</a></li>
+                    <li><a href="../pages/about-maja.html">About</a></li>
+                    <li><a href="../pages/contact-maja.html">Contact</a></li>
+                    <li><a href="../archives.html">Archives</a></li>
                     <li><a href="http://www.majazf.ca/blog/feeds/all.atom.xml" type="application/atom+xml" rel="alternate" alt="RSS Feed">Feed</a></li>
                 </ul></nav>
         </header><!-- /#banner -->
 
             <aside id="featured" class="body">
                 <article>
-                    <h1 class="entry-title"><a href="http://www.majazf.ca/blog/borked-migrations.html">Database Migrations ("You know nothing, Version Control.")</a></h1>
+                    <h1 class="entry-title"><a href="../borked-migrations.html">Database Migrations ("You know nothing, Version Control.")</a></h1>
                     <p>This is the story of how I rediscovered what version control doesn't do for you. Sure, I understand that git doesn't track what's in my project's local database, but to understand is one thing and to <em>feel in your heart forever</em> is another. In short, learning from mistakes and accidents is the greatest!</p>
 <p>So, I've been working on a Django project and as the project acquires new features, the database schema changes here and there. Changing the database from one schema to another and possibly moving data between tables is called a <em>migration</em>. To manage database migrations, we use <a href="http://south.aeracode.org/">South</a>, which is sort of integrated into the project's <code>manage.py</code> script. (This is because we're really using <a href="https://github.com/mozilla/playdoh">playdoh</a>, Mozilla's augmented, specially-configured flavour of Django.)</p>
 <p>South is lovely. Whenever you change the model definitions in your Django project, you ask South to generate Python code that defines the corresponding schema migration, which you can customize as needed. We'll call this Python code a <em>migration file</em>. To actually update your database with the schema migration, you feed the migration file to <code>manage.py migrate</code>.</p>
@@ -109,9 +109,9 @@
         </abbr>
 
         <address class="vcard author">
-                By                         <a class="url fn" href="http://www.majazf.ca/blog/author/maja-z-frydrychowicz.html">Maja Z. Frydrychowicz</a>
+                By                         <a class="url fn" href="../author/maja-z-frydrychowicz.html">Maja Z. Frydrychowicz</a>
         </address>
-<p>tags: <a href="http://www.majazf.ca/blog/tag/mozilla.html">mozilla</a> <a href="http://www.majazf.ca/blog/tag/foss.html">foss</a> <a href="http://www.majazf.ca/blog/tag/opw.html">opw</a> <a href="http://www.majazf.ca/blog/tag/south.html">south</a> <a href="http://www.majazf.ca/blog/tag/git.html">git</a> <a href="http://www.majazf.ca/blog/tag/database.html">database</a> <a href="http://www.majazf.ca/blog/tag/django.html">django</a> </p>
+<p>tags: <a href="../tag/mozilla.html">mozilla</a> <a href="../tag/foss.html">foss</a> <a href="../tag/opw.html">opw</a> <a href="../tag/south.html">south</a> <a href="../tag/git.html">git</a> <a href="../tag/database.html">database</a> <a href="../tag/django.html">django</a> </p>
 </footer><!-- /.post-info -->                </article>
             </aside><!-- /#featured -->
             <section id="twitter-timeline" class="body">
