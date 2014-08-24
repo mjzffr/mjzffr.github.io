@@ -2,8 +2,8 @@
 <html lang="en">
 <head>
         <meta charset="utf-8" />
-        <title>Maja Z. Frydrychowicz - Maja Z. Frydrychowicz</title>
-        <link rel="stylesheet" href="../theme/css/main.css" />
+        <title>Snapshots from my OPW Internship with Mozilla QA</title>
+        <link rel="stylesheet" href="./theme/css/main.css" />
         <link href="http://www.majazf.ca/blog/feeds/all.atom.xml" type="application/atom+xml" rel="alternate" title="Maja Z. Frydrychowicz Atom Feed" />
 
         <!--[if IE]>
@@ -16,17 +16,22 @@
         <header id="banner" class="body">
                 <h1><a href="http://www.majazf.ca/">Maja Z. Frydrychowicz </a></h1>
                 <nav><ul>
-                    <li><a href="../pages/about-maja.html">About</a></li>
-                    <li><a href="../pages/contact-maja.html">Contact</a></li>
-                    <li><a href="../archives.html">Archives</a></li>
+                    <li><a href="./pages/about-maja.html">About</a></li>
+                    <li><a href="./pages/contact-maja.html">Contact</a></li>
+                    <li><a href="./archives.html">Archives</a></li>
                     <li><a href="http://www.majazf.ca/blog/feeds/all.atom.xml" type="application/atom+xml" rel="alternate" alt="RSS Feed">Feed</a></li>
                 </ul></nav>
         </header><!-- /#banner -->
+<section id="content" class="body">
+  <article>
+    <header>
+      <h1 class="entry-title">
+        <a href="./opw-snapshot.html" rel="bookmark"
+           title="Permalink to Snapshots from my OPW Internship with Mozilla QA">Snapshots from my OPW Internship with Mozilla QA</a></h1>
+    </header>
 
-            <aside id="featured" class="body">
-                <article>
-                    <h1 class="entry-title"><a href="../opw-snapshot.html">Snapshots from my OPW Internship with Mozilla QA</a></h1>
-                    <p>Throughout my OPW<sup id="fnref:1"><a class="footnote-ref" href="#fn:1" rel="footnote">1</a></sup> internship with Mozilla QA<sup id="fnref:2"><a class="footnote-ref" href="#fn:2" rel="footnote">2</a></sup> I've been keeping an informal log in outline form<sup id="fnref:3"><a class="footnote-ref" href="#fn:3" rel="footnote">3</a></sup>. In it, I briefly describe what I accomplish (or fail to accomplish) each day, problems I encounter, who I talk to about them, which meetings I attend, what I read, useful tricks I learn, etc. So far, I have about 60-days worth of these tiny log entries about Mozilla.  Here's what they look like:</p>
+    <div class="entry-content">
+      <p>Throughout my OPW<sup id="fnref:1"><a class="footnote-ref" href="#fn:1" rel="footnote">1</a></sup> internship with Mozilla QA<sup id="fnref:2"><a class="footnote-ref" href="#fn:2" rel="footnote">2</a></sup> I've been keeping an informal log in outline form<sup id="fnref:3"><a class="footnote-ref" href="#fn:3" rel="footnote">3</a></sup>. In it, I briefly describe what I accomplish (or fail to accomplish) each day, problems I encounter, who I talk to about them, which meetings I attend, what I read, useful tricks I learn, etc. So far, I have about 60-days worth of these tiny log entries about Mozilla.  Here's what they look like:</p>
 <div style="text-align:center">
 <p><img alt="Checkvist Mozilla Log Screenshot" src="images/checkvist-screenshot.png" /></p>
 </div>
@@ -34,7 +39,7 @@
 <h1>So, what's it like being an intern with Mozilla QA?</h1>
 <p>I'm so glad you asked! First, some context. </p>
 <ul>
-<li>OPW interns <a href="../remote-work.html">work remotely</a>.</li>
+<li>OPW interns <a href="./remote-work.html">work remotely</a>.</li>
 <li>The internship position I applied for is called "<a href="https://wiki.mozilla.org/GNOME_Outreach_Summer2014#Mozilla_Bug_Wrangler_.28Desktop_QA.29">Bug Wrangler</a>", which refers to tasks like reproducing and triaging incoming Firefox bugs, but I've actually (mostly) been doing Django web development.</li>
 </ul>
 <p><em><strong>To future interns</strong>: as in my case, there can be some flexibility about your internship activities, and during your application process, you'll narrow down what you will work on. The mentor I applied to offered a Django project as an option under the Bug Wrangler umbrella, and that was more in line with my interests and experience than bug triage, so that's what I chose to focus on.</em></p>
@@ -54,7 +59,7 @@
 <h2>Week 5</h2>
 <p>At this point, I was just about finished with my first substantial <a href="https://github.com/mozilla/oneanddone/pull/124">pull request to One and Done</a>. My changes broke some unit tests, which caused me to discover that some of our test data was using the wrong data type: a regular Python dictionary instead of a Django <a href="https://docs.djangoproject.com/en/1.4/ref/request-response/#django.http.QueryDict">QueryDict</a>. Cool.</p>
 <p>I actually spent a bunch of time getting the unit tests to run in my dev environment, which is on a Linux virtual machine. My local copy of the project is stored in a directory that is shared between my Linux guest OS and Windows host OS, which happens to rely on file permissions that the <a href="https://nose.readthedocs.org/en/latest/">nose</a> testing library doesn't like. In the end, I chose to have a clone of the project in a non-shared directory that I used just for running unit tests.</p>
-<p>My work log also describes in detail how unintended changes to my development branch in git turned my Github pull request into a giant, unreadable mess. Aaah! (Be careful what you branch from and what you merge with, friends.) I had to close my original pull request and make a new, clean one, which was fairly embarrassing. Now I remember that on that day my friend and I were co-working in my apartment to battle <a href="../remote-work.html">the loneliness of remote work</a>, and she generously listened to me venting my misery about the incident. :) In retrospect, I learned a lot about git.</p>
+<p>My work log also describes in detail how unintended changes to my development branch in git turned my Github pull request into a giant, unreadable mess. Aaah! (Be careful what you branch from and what you merge with, friends.) I had to close my original pull request and make a new, clean one, which was fairly embarrassing. Now I remember that on that day my friend and I were co-working in my apartment to battle <a href="./remote-work.html">the loneliness of remote work</a>, and she generously listened to me venting my misery about the incident. :) In retrospect, I learned a lot about git.</p>
 <p>Later that week, that same pull request got merged and I started investigating a bug I ran into in one of the libraries our project relies on, which involved asking some questions on IRC. </p>
 <p>All around, a good week.</p>
 <h2>Week 9</h2>
@@ -62,7 +67,7 @@
 <ul>
 <li>updating the <a href="https://github.com/mozilla/oneanddone/pull/139">One and Done readme</a> to make it easier for new contributors to get started, </li>
 <li>adding tests to a <a href="https://github.com/mozilla/oneanddone/pull/151">pull request about form validation</a> I had made the week before,</li>
-<li>cleaning up an article about my <a href="../borked-migrations.html">database migration blunders</a>.</li>
+<li>cleaning up an article about my <a href="./borked-migrations.html">database migration blunders</a>.</li>
 </ul>
 <p>I also contributed my first few code reviews: the week before I missed an issue that someone else caught (doh!), but this week I found something that needed to be fixed (yay!). This was cool because I found the problem by simply taking the time to understand code that was <a href="https://github.com/mozilla/oneanddone/pull/154#discussion_r14786905">mostly mysterious to me</a>. Bonus: I learned a bit about <a href="http://www.voidspace.org.uk/python/mock/">Mock and patch</a>.</p>
 <p>By the end of the week, I was focused on sketching out the functionality and implementation of a <a href="https://bugzilla.mozilla.org/show_bug.cgi?id=1030972">new One and Done feature</a>. I enjoyed working with the project managers to define the feature requirements. Figuring out how to implement them required a few more weeks of research and learning on my part, but it all worked out in the end.</p>
@@ -81,7 +86,8 @@
 <p>I write the log using <a href="https://checkvist.com/">Checkvist</a>. It's fantastic. I did the same while at Hacker School.&#160;<a class="footnote-backref" href="#fnref:3" rev="footnote" title="Jump back to footnote 3 in the text">&#8617;</a></p>
 </li>
 </ol>
-</div><footer class="post-info">
+</div>
+<footer class="post-info">
         <abbr class="published" title="2014-08-07T00:00:00">
                 Date: 07 August 2014
         </abbr>
@@ -91,107 +97,13 @@
         </abbr>
 
         <address class="vcard author">
-                By                         <a class="url fn" href="../author/maja-z-frydrychowicz.html">Maja Z. Frydrychowicz</a>
+                By                         <a class="url fn" href="./author/maja-z-frydrychowicz.html">Maja Z. Frydrychowicz</a>
         </address>
-<p>tags: <a href="../tag/opw.html">opw</a> <a href="../tag/mozilla.html">mozilla</a> <a href="../tag/foss.html">foss</a> </p>
-</footer><!-- /.post-info -->                </article>
-            </aside><!-- /#featured -->
-                <section id="content" class="body">
-                    <h1>Other articles</h1>
+<p>tags: <a href="./tag/opw.html">opw</a> <a href="./tag/mozilla.html">mozilla</a> <a href="./tag/foss.html">foss</a> </p>
+</footer><!-- /.post-info -->    </div><!-- /.entry-content -->
 
-                    <ol id="posts-list" class="hfeed">
-
-            <li><article> <!-- class="hentry" -->
-                <header>
-                    <p><a href="../borked-migrations.html" rel="bookmark"
-                           title="Permalink to Database Migrations ("You know nothing, Version Control.")">Database Migrations ("You know nothing, Version Control.")</a></p>
-                </header>
-
-                <!--
-                <div class="entry-content">
-                 include 'article_infos.html' Missing \{\%
-                 article.summary Missing \{\{
-                <a class="readmore" href="../borked-migrations.html">read more</a>
-                </div> -->
-                <!-- /.entry-content -->
-            </article></li>
-
-            <li><article> <!-- class="hentry" -->
-                <header>
-                    <p><a href="../osb14.html" rel="bookmark"
-                           title="Permalink to Open Source Bridge 2014">Open Source Bridge 2014</a></p>
-                </header>
-
-                <!--
-                <div class="entry-content">
-                 include 'article_infos.html' Missing \{\%
-                 article.summary Missing \{\{
-                <a class="readmore" href="../osb14.html">read more</a>
-                </div> -->
-                <!-- /.entry-content -->
-            </article></li>
-
-            <li><article> <!-- class="hentry" -->
-                <header>
-                    <p><a href="../one-and-done-osbrige.html" rel="bookmark"
-                           title="Permalink to "One and Done" comes to Open Source Bridge 2014!">"One and Done" comes to Open Source Bridge 2014!</a></p>
-                </header>
-
-                <!--
-                <div class="entry-content">
-                 include 'article_infos.html' Missing \{\%
-                 article.summary Missing \{\{
-                <a class="readmore" href="../one-and-done-osbrige.html">read more</a>
-                </div> -->
-                <!-- /.entry-content -->
-            </article></li>
-
-            <li><article> <!-- class="hentry" -->
-                <header>
-                    <p><a href="../bugzilla-github.html" rel="bookmark"
-                           title="Permalink to Project Management at Mozilla">Project Management at Mozilla</a></p>
-                </header>
-
-                <!--
-                <div class="entry-content">
-                 include 'article_infos.html' Missing \{\%
-                 article.summary Missing \{\{
-                <a class="readmore" href="../bugzilla-github.html">read more</a>
-                </div> -->
-                <!-- /.entry-content -->
-            </article></li>
-
-            <li><article> <!-- class="hentry" -->
-                <header>
-                    <p><a href="../remote-work.html" rel="bookmark"
-                           title="Permalink to Working Remotely is... Hard? Different? Strange?">Working Remotely is... Hard? Different? Strange?</a></p>
-                </header>
-
-                <!--
-                <div class="entry-content">
-                 include 'article_infos.html' Missing \{\%
-                 article.summary Missing \{\{
-                <a class="readmore" href="../remote-work.html">read more</a>
-                </div> -->
-                <!-- /.entry-content -->
-            </article></li>
-
-            <li><article> <!-- class="hentry" -->
-                <header>
-                    <p><a href="../applying-to-opw.html" rel="bookmark"
-                           title="Permalink to Dive In! Applying to the FOSS Outreach Program for Women">Dive In! Applying to the FOSS Outreach Program for Women</a></p>
-                </header>
-
-                <!--
-                <div class="entry-content">
-                 include 'article_infos.html' Missing \{\%
-                 article.summary Missing \{\{
-                <a class="readmore" href="../applying-to-opw.html">read more</a>
-                </div> -->
-                <!-- /.entry-content -->
-            </article></li>
-                </ol><!-- /#posts-list -->
-                </section><!-- /#content -->
+  </article>
+</section>
             <section id="twitter-timeline" class="body">
                 <h1><a href="https://twitter.com/@maja_zf">@maja_zf</a> on Twitter</h1>
                 <div>
