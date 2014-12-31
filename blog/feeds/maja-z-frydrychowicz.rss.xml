@@ -81,7 +81,8 @@
 &lt;span class="n"&gt;FATAL&lt;/span&gt; &lt;span class="n"&gt;ERROR&lt;/span&gt; &lt;span class="o"&gt;-&lt;/span&gt; &lt;span class="n"&gt;The&lt;/span&gt; &lt;span class="n"&gt;following&lt;/span&gt; &lt;span class="n"&gt;SQL&lt;/span&gt; &lt;span class="n"&gt;query&lt;/span&gt; &lt;span class="n"&gt;failed&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt; &lt;span class="n"&gt;DROP&lt;/span&gt; &lt;span class="n"&gt;TABLE&lt;/span&gt; &lt;span class="n"&gt;tasks_taskarea&lt;/span&gt; &lt;span class="n"&gt;CASCADE&lt;/span&gt;&lt;span class="o"&gt;;&lt;/span&gt;
 &lt;span class="n"&gt;The&lt;/span&gt; &lt;span class="n"&gt;error&lt;/span&gt; &lt;span class="n"&gt;was&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt; &lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="mi"&gt;1051&lt;/span&gt;&lt;span class="o"&gt;,&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;Unknown table &amp;#39;tasks_taskarea&amp;#39;&amp;quot;&lt;/span&gt;&lt;span class="o"&gt;)&lt;/span&gt;
 &lt;span class="o"&gt;&amp;gt;&lt;/span&gt;&lt;span class="n"&gt;snip&lt;/span&gt;
-&lt;span class="n"&gt;KeyError&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;The model &amp;#39;taskarea&amp;#39; from the app &amp;#39;tasks&amp;#39; is not available in this migration.&amp;quot;&lt;/span&gt;
+&lt;span class="n"&gt;KeyError&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;The model &amp;#39;taskarea&amp;#39; from the app &amp;#39;tasks&amp;#39; is not available in&lt;/span&gt;
+&lt;span class="s2"&gt;this migration.&amp;quot;&lt;/span&gt;
 &lt;/pre&gt;&lt;/div&gt;
 
 
@@ -92,21 +93,21 @@
 
 
 &lt;p&gt;The output is shown below. The lines of interest are &lt;code&gt;0010_auth__del&lt;/code&gt; and &lt;code&gt;0010_auto__chg&lt;/code&gt;; I'm trying to apply migration &lt;code&gt;0011&lt;/code&gt; but I can't, because it's the same migration as &lt;code&gt;0010_auto__del&lt;/code&gt;, which should have been reversed a few commits ago. &lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span class="o"&gt;+------------------------------------------------------------------------------+&lt;/span&gt;
-&lt;span class="o"&gt;|&lt;/span&gt;  &lt;span class="n"&gt;migration&lt;/span&gt;                                                                   &lt;span class="o"&gt;|&lt;/span&gt;
-&lt;span class="o"&gt;+------------------------------------------------------------------------------+&lt;/span&gt;
-&lt;span class="o"&gt;|&lt;/span&gt;  &lt;span class="mo"&gt;0001&lt;/span&gt;&lt;span class="n"&gt;_initial&lt;/span&gt;                                                                &lt;span class="o"&gt;|&lt;/span&gt;
-&lt;span class="o"&gt;|&lt;/span&gt;  &lt;span class="mo"&gt;0002&lt;/span&gt;&lt;span class="n"&gt;_auto__add_feedback&lt;/span&gt;                                                     &lt;span class="o"&gt;|&lt;/span&gt;
-&lt;span class="o"&gt;|&lt;/span&gt;  &lt;span class="mo"&gt;0003&lt;/span&gt;&lt;span class="n"&gt;_auto__del_field_task_allow_multiple_finishes&lt;/span&gt;                           &lt;span class="o"&gt;|&lt;/span&gt;
-&lt;span class="o"&gt;|&lt;/span&gt;  &lt;span class="mo"&gt;0004&lt;/span&gt;&lt;span class="n"&gt;_auto__add_field_task_is_draft&lt;/span&gt;                                          &lt;span class="o"&gt;|&lt;/span&gt;
-&lt;span class="o"&gt;|&lt;/span&gt;  &lt;span class="mo"&gt;0005&lt;/span&gt;&lt;span class="n"&gt;_auto__del_field_feedback_task__del_field_feedback_user__add_field_feed&lt;/span&gt; &lt;span class="o"&gt;|&lt;/span&gt;
-&lt;span class="o"&gt;|&lt;/span&gt;  &lt;span class="mo"&gt;0006&lt;/span&gt;&lt;span class="n"&gt;_auto__add_field_task_creator__add_field_taskarea_creator&lt;/span&gt;               &lt;span class="o"&gt;|&lt;/span&gt;
-&lt;span class="o"&gt;|&lt;/span&gt;  &lt;span class="mo"&gt;0007&lt;/span&gt;&lt;span class="n"&gt;_auto__add_taskkeyword__add_tasktype__add_taskteam__add_taskproject__ad&lt;/span&gt; &lt;span class="o"&gt;|&lt;/span&gt;
-&lt;span class="o"&gt;|&lt;/span&gt;  &lt;span class="mo"&gt;000&lt;/span&gt;&lt;span class="mi"&gt;8&lt;/span&gt;&lt;span class="n"&gt;_task_data&lt;/span&gt;                                                              &lt;span class="o"&gt;|&lt;/span&gt;
-&lt;span class="o"&gt;|&lt;/span&gt;  &lt;span class="mo"&gt;000&lt;/span&gt;&lt;span class="mi"&gt;9&lt;/span&gt;&lt;span class="n"&gt;_auto__chg_field_task_team&lt;/span&gt;                                              &lt;span class="o"&gt;|&lt;/span&gt;
-&lt;span class="o"&gt;|&lt;/span&gt;  &lt;span class="mo"&gt;0010&lt;/span&gt;&lt;span class="n"&gt;_auto__del_taskarea__del_field_task_area__add_field_taskkeyword_name&lt;/span&gt;    &lt;span class="o"&gt;|&lt;/span&gt;
-&lt;span class="o"&gt;|&lt;/span&gt;  &lt;span class="mo"&gt;0010&lt;/span&gt;&lt;span class="n"&gt;_auto__chg_field_taskattempt_user__chg_field_task_creator__chg_field_ta&lt;/span&gt; &lt;span class="o"&gt;|&lt;/span&gt;
-&lt;span class="o"&gt;+------------------------------------------------------------------------------+&lt;/span&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;+------------------------------------------------------------------------------+
+|  migration                                                                   |
++------------------------------------------------------------------------------+
+|  0001_initial                                                                |
+|  0002_auto__add_feedback                                                     |
+|  0003_auto__del_field_task_allow_multiple_finishes                           |
+|  0004_auto__add_field_task_is_draft                                          |
+|  0005_auto__del_field_feedback_task__del_field_feedback_user__add_field_feed |
+|  0006_auto__add_field_task_creator__add_field_taskarea_creator               |
+|  0007_auto__add_taskkeyword__add_tasktype__add_taskteam__add_taskproject__ad |
+|  0008_task_data                                                              |
+|  0009_auto__chg_field_task_team                                              |
+|  0010_auto__del_taskarea__del_field_task_area__add_field_taskkeyword_name    |
+|  0010_auto__chg_field_taskattempt_user__chg_field_task_creator__chg_field_ta |
++------------------------------------------------------------------------------+
 &lt;/pre&gt;&lt;/div&gt;
 
 
@@ -114,19 +115,20 @@
 &lt;p&gt;I figure out which commit added the migration I need to reverse:&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span class="c"&gt;# Display commit log along with names of files affected by each commit. &lt;/span&gt;
 &lt;span class="c"&gt;# Once in less, I searched for &amp;#39;0010_auto__del&amp;#39; to get to the right commit.&lt;/span&gt;
-&lt;span class="nv"&gt;$ &lt;/span&gt;git log --name-status | less
+git log --name-status &lt;span class="p"&gt;|&lt;/span&gt; less
 &lt;/pre&gt;&lt;/div&gt;
 
 
 &lt;p&gt;What that key information, the following sequence of commands tidies everything up:&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span class="c"&gt;# Switch to the commit that added migration 0010_auto__del&lt;/span&gt;
-&lt;span class="nv"&gt;$ &lt;/span&gt;git checkout e67fe32c
+git checkout e67fe32c
 &lt;span class="c"&gt;# Migrate backward to a happy migration; I chose 0008 to be safe. &lt;/span&gt;
 &lt;span class="c"&gt;# ./manage.py migrate [appname] [migration]&lt;/span&gt;
-&lt;span class="nv"&gt;$ &lt;/span&gt;./manage.py migrate oneanddone.tasks 0008
-&lt;span class="nv"&gt;$ &lt;/span&gt;git checkout master
-&lt;span class="c"&gt;# Sync the database and migrate all the way forward using the most up-to-date migrations.&lt;/span&gt;
-&lt;span class="nv"&gt;$ &lt;/span&gt;./manage.py syncdb &lt;span class="o"&gt;&amp;amp;&amp;amp;&lt;/span&gt; ./manage.py migrate
+./manage.py migrate oneanddone.tasks 0008
+git checkout master
+&lt;span class="c"&gt;# Sync the database and migrate all the way forward using the most &lt;/span&gt;
+&lt;span class="c"&gt;# up-to-date migrations.&lt;/span&gt;
+./manage.py syncdb &lt;span class="o"&gt;&amp;amp;&amp;amp;&lt;/span&gt; ./manage.py migrate
 &lt;/pre&gt;&lt;/div&gt;</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">Maja Z. Frydrychowicz</dc:creator><pubDate>Fri, 25 Jul 2014 00:00:00 -0400</pubDate><guid>tag:www.majazf.ca,2014-07-04:blog/borked-migrations.html</guid><category>mozilla</category><category>foss</category><category>opw</category><category>south</category><category>git</category><category>database</category><category>django</category></item><item><title>Open Source Bridge 2014</title><link>http://www.majazf.ca/blog/osb14.html</link><description>&lt;p&gt;Open Source Bridge 2014 was my first conference experience in about 5 years and my first non-academic conference. It had a great mix of talks and was thoughtfully organized and super friendly. I learned about Firefox quality assurance, communication strategies, remote work, discrimination in the tech industry and being a better human. That mix could have been totally different though: during almost every session, there were 3-4 interesting talks competing for my attention, which is a good thing.&lt;/p&gt;
 &lt;p&gt;Attendees were welcome to help out with conference logistics and encouraged to organize spontaneous, open meetings. For example, I spent a couple of hours volunteering as session chair, which amounts to helping each speaker set up for their talk, introducing them and giving them timing cues. &lt;/p&gt;
 &lt;p&gt;Liz and I also set up a table at the conference Hacker Lounge to &lt;a href="http://www.majazf.ca/blog/one-and-done-osbrige.html"&gt;introduce potential contributors to Firefox quality assurance and One and Done&lt;/a&gt;. We ended up supporting four people as they each set up a development environment for our project. As expected, each participant ran into snags along the way with things like database configuration so it was good to work on this in a group. &lt;/p&gt;
