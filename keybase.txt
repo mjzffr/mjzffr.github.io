@@ -1,0 +1,66 @@
+==================================================================
+https://keybase.io/maja_zf
+--------------------------------------------------------------------
+
+I hereby claim:
+
+  * I am an admin of http://www.erranderr.com
+  * I am maja_zf (https://keybase.io/maja_zf) on keybase.
+  * I have a public key with fingerprint 026D 04CC F5F0 B6E5 6ACA  3B9F A5DB B7B8 CD9F 4726
+
+To claim this, I am signing this object:
+
+{
+    "body": {
+        "key": {
+            "fingerprint": "026d04ccf5f0b6e56aca3b9fa5dbb7b8cd9f4726",
+            "host": "keybase.io",
+            "key_id": "a5dbb7b8cd9f4726",
+            "kid": "010178b133112df84699027db75e71b6d76dbe609f29e721a07dc7dd0e29017a36680a",
+            "uid": "5c13a23fc6b6a6ac5af2efd97bac0f00",
+            "username": "maja_zf"
+        },
+        "service": {
+            "hostname": "www.erranderr.com",
+            "protocol": "http:"
+        },
+        "type": "web_service_binding",
+        "version": 1
+    },
+    "ctime": 1421723513,
+    "expire_in": 157680000,
+    "prev": "6cce3ce630561e6009bd3a37cb9e4883648479d73bbab0ab1d5a315a9a6a69bd",
+    "seqno": 5,
+    "tag": "signature"
+}
+
+with the aforementioned key, yielding the PGP signature:
+
+-----BEGIN PGP MESSAGE-----
+Version: GnuPG v1.4.12 (GNU/Linux)
+
+owFtkmlIVFEUx8cpLaPQooVSi15U5Ljct903byqiPjQR2EIRBeJ0t+e8yvemN+NM
+ptNGkn5ooz5VVFYSImRWoGlSEmRkEmTQanu0EEFRhJXVfWLfuh/u5Z7z+//vOYd7
+YMwwjzel/nFLa8+J4KyU7vfYs7qja3ulgG1aIQQqhY1s8DBMq5Q5Ece0YkJAABKk
+QCHEUA2AIVMhIkjGuoFUirGG/YTqhqJJUMgTwnbUVXAbjKKswLR5jF9CJuXR//Ab
+BxNABKLmx6Isi6JEDb8CdR1IGsWayjQRQ6pBihkEuiHpTJNEBDRKNEoBk3SuRDKE
+foC4XfmgnUpEGUmyQSCGiBerIkNiBtU1jAgwAHDBKHMsVMY4XYY2oNBWQ0jmCTwY
+NwlzJ+A2MgQkEokC5jjIonwvIHYZ10ccO2YTexNPh2OxSMBVxyoigzjDoSGjEDYt
+ykfJBXHmRE3bEgIiJ0nMdJ1FRRI1SVZFOU9gWyKmw0KmS6gab4cv9xkW55aQECYT
+BmWgQpHPAeiYykjWCNaZ4vfLUPErmk41GWOEAcIiVZEsqkjn3UPOCm5rmy1bCKi8
+TFTKLaNmqYVi5akOE5KjalOyh3tSvJ60VK/7HTyj0jP//ZEefcTvBX2V8wu/PoDB
+ly3T71zprFyTe+77+e4J9Z+XFfuyRqblLCzKLW+6fTytt6944qTJjbtTd92yfnhn
+F046PKcuJ5zZfGxnYzt+E3zdmjW3vurd/lXX9pVcyO8v2pbd/6Euu2lt++OZe3y1
+HaPVU1MHMsYF+hxf+q9HQq/pfQqaM7tGHB1/L9Bwpu3T5KvNTelP6z2gcfHHkqqV
+J29ah3ac+DT1+PJLT3zPfu54fnlvzek/tVUDZ/Xiwoc/KkpvFD3/BnMLYhdneDLe
+dianeGnW/ZoVSn5w7rQXF2bcJa+UY0fmHRz78rrnS118SUVNPwi2DYTbF62r/rA+
+UZ1s2HUg/Pve0oOf29r/Ag==
+=VKEK
+-----END PGP MESSAGE-----
+
+And finally, I am proving ownership of this host by posting or
+appending to this document.
+
+View my publicly-auditable identity here: https://keybase.io/maja_zf
+
+==================================================================
