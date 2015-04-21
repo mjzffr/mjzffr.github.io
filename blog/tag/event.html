@@ -25,51 +25,51 @@
 
             <aside id="featured" class="body">
                 <article>
-                    <h1 class="entry-title"><a href="../osb14.html">Open Source Bridge 2014</a></h1>
-                    <p>Open Source Bridge 2014 was my first conference experience in about 5 years and my first non-academic conference. It had a great mix of talks and was thoughtfully organized and super friendly. I learned about Firefox quality assurance, communication strategies, remote work, discrimination in the tech industry and being a better human. That mix could have been totally different though: during almost every session, there were 3-4 interesting talks competing for my attention, which is a good thing.</p>
-<p>Attendees were welcome to help out with conference logistics and encouraged to organize spontaneous, open meetings. For example, I spent a couple of hours volunteering as session chair, which amounts to helping each speaker set up for their talk, introducing them and giving them timing cues. </p>
-<p>Liz and I also set up a table at the conference Hacker Lounge to <a href="../one-and-done-osbrige.html">introduce potential contributors to Firefox quality assurance and One and Done</a>. We ended up supporting four people as they each set up a development environment for our project. As expected, each participant ran into snags along the way with things like database configuration so it was good to work on this in a group. </p>
-<p>It felt awesome to share my recent experience and speed up their setup process. I think the fact that One and Done is my first Django project helped a lot: when someone is new to a project, having expert mentors is great but in many cases it's much easier to pose questions and relate to someone who is just a bit less of a beginner than you are. </p>
-<p>That particular Hacker Lounge session got me thinking about how easy it is for potential FOSS contributors to get discouraged by setup alone. A good readme is priceless! The <a href="https://github.com/mjzffr/oneanddone/blob/master/README.md">One and Done readme</a> is quite detailed and helpful, but we will likely add a setup guide or dev FAQ to the projet wiki for additional support. It's silly for someone to miss out on contributing just because they get mysterious errors while installing mysql! </p>
-<h1>Firefox Quality Assurance</h1>
-<p>This conference happened to be an opportunity for me to work and talk in person with Liz for the first time during my OPW internship. In addition to discussing additions to One and Done, Liz gave me a nice overview of how Firefox features and bug fixes get tested and gradually make their way through a series of release channels: from Nightly, to Aurora, then Beta, then a real release. We looked through this <a href="https://wiki.mozilla.org/Releases/Firefox_31/Test_Plan">Firefox 31 Test Plan</a> and talked about the supporting tools used by the QA team.</p>
-<p>Many of these tools are actually developed by Mozilla and there was a really nice talk at this year's Open Source Bridge about one such tool, Socorro, which is used for <a href="http://www.opensourcebridge.org/sessions/1319">Firefox crash reporting and analysis</a>. Fun facts:</p>
+                    <h1 class="entry-title"><a href="../osb14.html">Open Source Bridge&nbsp;2014</a></h1>
+                    <p>Open Source Bridge 2014 was my first conference experience in about 5 years and my first non-academic conference. It had a great mix of talks and was thoughtfully organized and super friendly. I learned about Firefox quality assurance, communication strategies, remote work, discrimination in the tech industry and being a better human. That mix could have been totally different though: during almost every session, there were 3-4 interesting talks competing for my attention, which is a good&nbsp;thing.</p>
+<p>Attendees were welcome to help out with conference logistics and encouraged to organize spontaneous, open meetings. For example, I spent a couple of hours volunteering as session chair, which amounts to helping each speaker set up for their talk, introducing them and giving them timing&nbsp;cues. </p>
+<p>Liz and I also set up a table at the conference Hacker Lounge to <a href="../one-and-done-osbrige.html">introduce potential contributors to Firefox quality assurance and One and Done</a>. We ended up supporting four people as they each set up a development environment for our project. As expected, each participant ran into snags along the way with things like database configuration so it was good to work on this in a&nbsp;group. </p>
+<p>It felt awesome to share my recent experience and speed up their setup process. I think the fact that One and Done is my first Django project helped a lot: when someone is new to a project, having expert mentors is great but in many cases it&#8217;s much easier to pose questions and relate to someone who is just a bit less of a beginner than you&nbsp;are. </p>
+<p>That particular Hacker Lounge session got me thinking about how easy it is for potential <span class="caps">FOSS</span> contributors to get discouraged by setup alone. A good readme is priceless! The <a href="https://github.com/mjzffr/oneanddone/blob/master/README.md">One and Done readme</a> is quite detailed and helpful, but we will likely add a setup guide or dev <span class="caps">FAQ</span> to the projet wiki for additional support. It&#8217;s silly for someone to miss out on contributing just because they get mysterious errors while installing&nbsp;mysql! </p>
+<h1>Firefox Quality&nbsp;Assurance</h1>
+<p>This conference happened to be an opportunity for me to work and talk in person with Liz for the first time during my <span class="caps">OPW</span> internship. In addition to discussing additions to One and Done, Liz gave me a nice overview of how Firefox features and bug fixes get tested and gradually make their way through a series of release channels: from Nightly, to Aurora, then Beta, then a real release. We looked through this <a href="https://wiki.mozilla.org/Releases/Firefox_31/Test_Plan">Firefox 31 Test Plan</a> and talked about the supporting tools used by the <span class="caps">QA</span>&nbsp;team.</p>
+<p>Many of these tools are actually developed by Mozilla and there was a really nice talk at this year&#8217;s Open Source Bridge about one such tool, Socorro, which is used for <a href="http://www.opensourcebridge.org/sessions/1319">Firefox crash reporting and analysis</a>. Fun&nbsp;facts:</p>
 <ul>
-<li>If you go to <code>about:crashes</code> in Firefox, you can easily access the <a href="https://crash-stats.mozilla.com/">crash reports</a> you've submitted and see whether anyone is working on the associated bug(s).</li>
-<li>Socorro stores about 3 months worth of crash reports (3-5 million crashes per day!) and those crashes are initially sent to file system storage rather  than a database. Why? A file system has better up-time than a database.</li>
-<li>To access any particular crash quickly on that file system, a <a href="http://www.twobraids.com/2012/12/socorro-file-system-storage.html">radix storage scheme</a> is implemented with <strong>symbolic links</strong>. Cool. (You can't just store thousands of files in one directory -- file access would be ridiculously slow.)</li>
+<li>If you go to <code>about:crashes</code> in Firefox, you can easily access the <a href="https://crash-stats.mozilla.com/">crash reports</a> you&#8217;ve submitted and see whether anyone is working on the associated&nbsp;bug(s).</li>
+<li>Socorro stores about 3 months worth of crash reports (3-5 million crashes per day!) and those crashes are initially sent to file system storage rather  than a database. Why? A file system has better up-time than a&nbsp;database.</li>
+<li>To access any particular crash quickly on that file system, a <a href="http://www.twobraids.com/2012/12/socorro-file-system-storage.html">radix storage scheme</a> is implemented with <strong>symbolic links</strong>. Cool. (You can&#8217;t just store thousands of files in one directory &#8212; file access would be ridiculously&nbsp;slow.)</li>
 </ul>
-<p>Those points refer to just one component of Socorro -- there's all kinds of other neat stuff about it.</p>
-<h1>Selected Talks</h1>
-<p>Some of the talks I attended, like the one about Socorro, related quite closely to my current internship with Mozilla.</p>
+<p>Those points refer to just one component of Socorro &#8212; there&#8217;s all kinds of other neat stuff about&nbsp;it.</p>
+<h1>Selected&nbsp;Talks</h1>
+<p>Some of the talks I attended, like the one about Socorro, related quite closely to my current internship with&nbsp;Mozilla.</p>
 <ul>
-<li>Roan Kattouw showed us surprising and bizarre browser <a href="http://www.opensourcebridge.org/sessions/1247">rendering bugs</a> that he discovered while working on the <a href="http://www.mediawiki.org/wiki/VisualEditor">Visual Editor</a> for Wikimedia.</li>
-<li>As it turns out, lots of people are as <a href="../remote-work.html">ambivalent about remote work</a> as I am, and we all flocked to two talks about how great it is to work on a distributed team. Handy tips for remote work: <a href="http://www.opensourcebridge.org/sessions/1244">overcommunicate</a> and <a href="http://www.opensourcebridge.org/sessions/1278">always assume good faith in text communication</a>. I feel hopeful.</li>
+<li>Roan Kattouw showed us surprising and bizarre browser <a href="http://www.opensourcebridge.org/sessions/1247">rendering bugs</a> that he discovered while working on the <a href="http://www.mediawiki.org/wiki/VisualEditor">Visual Editor</a> for&nbsp;Wikimedia.</li>
+<li>As it turns out, lots of people are as <a href="../remote-work.html">ambivalent about remote work</a> as I am, and we all flocked to two talks about how great it is to work on a distributed team. Handy tips for remote work: <a href="http://www.opensourcebridge.org/sessions/1244">overcommunicate</a> and <a href="http://www.opensourcebridge.org/sessions/1278">always assume good faith in text communication</a>. I feel&nbsp;hopeful.</li>
 </ul>
-<p>Other talks helped me think about my future career path in the tech industry and the open source community. Unexpected bonus: many of these talks caused me to reflect about diversity and bias in our field.</p>
+<p>Other talks helped me think about my future career path in the tech industry and the open source community. Unexpected bonus: many of these talks caused me to reflect about diversity and bias in our&nbsp;field.</p>
 <ul>
-<li>The way Julie Pagano described <a href="http://www.opensourcebridge.org/sessions/1185">impostor syndrome</a> really hit home: "People with impostor syndrome do not share knowledge, collaborate, help with OSS, apply for jobs. [They] start small, remain small, end up small." </li>
-<li>In a talk on <a href="http://www.opensourcebridge.org/sessions/1394">negotiation</a>, I learned how important it is to practice silence and pause: if you don't feel informed enough to make a decision, focus on getting your questions answered. It sounds obvious but it's hard to do in the moment! Similarly, another talk about <a href="http://www.opensourcebridge.org/sessions/1291">influence</a> described how to identify and respond to different communication styles and how to pay attention to the people around us.</li>
-<li><a href="http://franceshocutt.com/2014/07/01/why-are-these-people-following-me-leadership-for-the-introverted-uncertain-and-astonished/">Frances Hocutt's keynote</a> is filled with so much awesome. Go listen to it now. Here's one of my favourite parts:</li>
+<li>The way Julie Pagano described <a href="http://www.opensourcebridge.org/sessions/1185">impostor syndrome</a> really hit home: &#8220;People with impostor syndrome do not share knowledge, collaborate, help with <span class="caps">OSS</span>, apply for jobs. [They] start small, remain small, end up&nbsp;small.&#8221; </li>
+<li>In a talk on <a href="http://www.opensourcebridge.org/sessions/1394">negotiation</a>, I learned how important it is to practice silence and pause: if you don&#8217;t feel informed enough to make a decision, focus on getting your questions answered. It sounds obvious but it&#8217;s hard to do in the moment! Similarly, another talk about <a href="http://www.opensourcebridge.org/sessions/1291">influence</a> described how to identify and respond to different communication styles and how to pay attention to the people around&nbsp;us.</li>
+<li><a href="http://franceshocutt.com/2014/07/01/why-are-these-people-following-me-leadership-for-the-introverted-uncertain-and-astonished/">Frances Hocutt&#8217;s keynote</a> is filled with so much awesome. Go listen to it now. Here&#8217;s one of my favourite&nbsp;parts:</li>
 </ul>
 <blockquote>
 <p>Leadership is learned, and learning requires vulnerability, and
 vulnerability depends on the safety to be vulnerable. And our communities are
-demonstrably unsafe. We are artificially limiting our pool of leaders. [...]
+demonstrably unsafe. We are artificially limiting our pool of leaders. [&#8230;]
 We create shame around ignorance. We devalue social and emotional
-skills. [...] We devalue lived experience and natural variation, and 
+skills. [&#8230;] We devalue lived experience and natural variation, and 
 in its place,
 we raise up a false and impossible impartiality, which ends hurting
 us all. We experience incompetent and unethical leadership, and
-instead of learning to lead better we devalue the idea of leadership.</p>
+instead of learning to lead better we devalue the idea of&nbsp;leadership.</p>
 </blockquote>
-<h1>A Delighful Conference Experience</h1>
+<h1>A Delighful Conference&nbsp;Experience</h1>
 <ul>
-<li>All the food was vegetarian, most of it was vegan. I eat meat but I didn't miss it at all. It somehow added to the nice atmosphere that everyone could eat everything. </li>
-<li>The attendee badges were actually booklets that contained the conference schedule and the code of conduct. One's name appears on each side of the booklet, so no problem with flipped badges. The lanyards for the badges were colour-coded so you can easily tell who is ok with being photographed and who is not. </li>
-<li>There was a quiet room! So nice for overwhelmed introverts like me. Being around people is exhausting. :)</li>
+<li>All the food was vegetarian, most of it was vegan. I eat meat but I didn&#8217;t miss it at all. It somehow added to the nice atmosphere that everyone could eat&nbsp;everything. </li>
+<li>The attendee badges were actually booklets that contained the conference schedule and the code of conduct. One&#8217;s name appears on each side of the booklet, so no problem with flipped badges. The lanyards for the badges were colour-coded so you can easily tell who is ok with being photographed and who is&nbsp;not. </li>
+<li>There was a quiet room! So nice for overwhelmed introverts like me. Being around people is exhausting.&nbsp;:)</li>
 </ul>
-<p>The way the conference was organized was considerate, inclusive and thoughtful. I hope to go back in future years. </p><footer class="post-info">
+<p>The way the conference was organized was considerate, inclusive and thoughtful. I hope to go back in future&nbsp;years. </p><footer class="post-info">
         <abbr class="published" title="2014-06-30T09:18:00-04:00">
                 Date: 30 June 2014
         </abbr>
@@ -85,14 +85,14 @@ instead of learning to lead better we devalue the idea of leadership.</p>
 </footer><!-- /.post-info -->                </article>
             </aside><!-- /#featured -->
                 <section id="content" class="body">
-                    <h1>Other articles</h1>
+                    <h1 class='first_heading'>Other articles</h1>
 
                     <ol id="posts-list" class="hfeed">
 
             <li><article> <!-- class="hentry" -->
                 <header>
                     <p><a href="../one-and-done-osbrige.html" rel="bookmark"
-                           title="Permalink to "One and Done" comes to Open Source Bridge 2014!">"One and Done" comes to Open Source Bridge 2014!</a></p>
+                           title="Permalink to “One and Done” comes to Open Source Bridge 2014!"><span class="dquo">&#8220;</span>One and Done&#8221; comes to Open Source Bridge&nbsp;2014!</a></p>
                 </header>
 
                 <!--
@@ -113,16 +113,13 @@ instead of learning to lead better we devalue the idea of leadership.</p>
                 </div>
             </section>
  !-->
-        <section id="extras" class="body">
-        </section><!-- /#extras -->
-
         <footer id="contentinfo" class="body">
 
                 <address id="about" class="vcard body">
                 <a rel="license" href="http://creativecommons.org/licenses/by-nc-sa/4.0/"><img alt="Creative Commons License" style="border-width:0" src="https://i.creativecommons.org/l/by-nc-sa/4.0/88x31.png" /></a><br />This work by <span xmlns:cc="http://creativecommons.org/ns#" property="cc:attributionName">Maja Frydrychowicz</span> is licensed under a <a rel="license" href="http://creativecommons.org/licenses/by-nc-sa/4.0/">Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International License</a>.
                 </address><!-- /#about -->
 
-                <p>Proudly powered by <a href="http://getpelican.com/">Pelican</a>, which takes great advantage of <a href="http://python.org">Python</a>.<br/> Based on theme by <a href="http://coding.smashingmagazine.com/2009/08/04/designing-a-html-5-layout-from-scratch/">Smashing Magazine</a>, thanks!</p>
+                <p id="acknowledge">Proudly powered by <a href="http://getpelican.com/">Pelican</a>, which takes great advantage of <a href="http://python.org">Python</a>.<br/> Based on theme by <a href="http://coding.smashingmagazine.com/2009/08/04/designing-a-html-5-layout-from-scratch/">Smashing Magazine</a>, thanks!</p>
         </footer><!-- /#contentinfo -->
 
     <script type="text/javascript">

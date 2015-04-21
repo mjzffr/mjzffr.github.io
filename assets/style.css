@@ -19,13 +19,18 @@ a[href^="http://"]
 }
 */
 
+@media only screen and (max-width: 1000px) {
+                    body { font-size:150%;}
+                    #enter {width:70%;}
+}
+
 #enter{
     height:20%;
     margin:10% auto auto auto;
     background: #EDEAEB;
     padding:1em 3em 1em 3em;
-    border-style:dotted;
-    border-width:0.1em;
+    border: #A29293 solid;
+    border-width: 1em 0 1em 0;
 }
 
 
@@ -64,6 +69,7 @@ body {
     font-family: sans-serif;
     background-color:#938687;
     margin:0;
+    font-size:120%;
 }
 
 h1 {

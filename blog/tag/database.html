@@ -25,30 +25,30 @@
 
             <aside id="featured" class="body">
                 <article>
-                    <h1 class="entry-title"><a href="../borked-migrations.html">Database Migrations ("You know nothing, Version Control.")</a></h1>
-                    <p>This is the story of how I rediscovered what version control doesn't do for you. Sure, I understand that git doesn't track what's in my project's local database, but to understand is one thing and to <em>feel in your heart forever</em> is another. In short, learning from mistakes and accidents is the greatest!</p>
-<p>So, I've been working on a Django project and as the project acquires new features, the database schema changes here and there. Changing the database from one schema to another and possibly moving data between tables is called a <em>migration</em>. To manage database migrations, we use <a href="http://south.aeracode.org/">South</a>, which is sort of integrated into the project's <code>manage.py</code> script. (This is because we're really using <a href="https://github.com/mozilla/playdoh">playdoh</a>, Mozilla's augmented, specially-configured flavour of Django.)</p>
-<p>South is lovely. Whenever you change the model definitions in your Django project, you ask South to generate Python code that defines the corresponding schema migration, which you can customize as needed. We'll call this Python code a <em>migration file</em>. To actually update your database with the schema migration, you feed the migration file to <code>manage.py migrate</code>.</p>
-<p>These migration files are safely stored in your git repository, so your project has a history of database changes <em>that you can replay backward and forward</em>. For example, let's say you're working in a different repository branch on a new feature for which you've changed the database schema a bit. Whenever you switch to the feature branch <strong>you must remember</strong> to apply your new database migration (migrate forward). Whenever you switch back to master <strong>you must remember</strong> to migrate backward to the database schema expected by the code in master. <strong>Git doesn't know which migration your database should be at.</strong> Sometimes I'm distracted and I forget. :(</p>
-<p>As always, it gets more interesting when you have project collaborators because they might push changes to migration files and <strong>you must pay attention and remember</strong> to actually apply these migrations in the right order. We will examine one such scenario in detail.</p>
-<h1>Adventures with Overlooked Database Migrations</h1>
-<p>Let's call the actors Sparkles and Rainbows. Sparkles and Rainbows are both contributing to the same project and so they each regularly push or pull from the same "upstream" git repository. However, they each use their own local database for development. As far as the database goes, git is only tracking South migration files. Here is our scenario.</p>
+                    <h1 class="entry-title"><a href="../borked-migrations.html">Database Migrations (&#8220;You know nothing, Version&nbsp;Control.&#8221;)</a></h1>
+                    <p>This is the story of how I rediscovered what version control doesn&#8217;t do for you. Sure, I understand that git doesn&#8217;t track what&#8217;s in my project&#8217;s local database, but to understand is one thing and to <em>feel in your heart forever</em> is another. In short, learning from mistakes and accidents is the&nbsp;greatest!</p>
+<p>So, I&#8217;ve been working on a Django project and as the project acquires new features, the database schema changes here and there. Changing the database from one schema to another and possibly moving data between tables is called a <em>migration</em>. To manage database migrations, we use <a href="http://south.aeracode.org/">South</a>, which is sort of integrated into the project&#8217;s <code>manage.py</code> script. (This is because we&#8217;re really using <a href="https://github.com/mozilla/playdoh">playdoh</a>, Mozilla&#8217;s augmented, specially-configured flavour of&nbsp;Django.)</p>
+<p>South is lovely. Whenever you change the model definitions in your Django project, you ask South to generate Python code that defines the corresponding schema migration, which you can customize as needed. We&#8217;ll call this Python code a <em>migration file</em>. To actually update your database with the schema migration, you feed the migration file to <code>manage.py migrate</code>.</p>
+<p>These migration files are safely stored in your git repository, so your project has a history of database changes <em>that you can replay backward and forward</em>. For example, let&#8217;s say you&#8217;re working in a different repository branch on a new feature for which you&#8217;ve changed the database schema a bit. Whenever you switch to the feature branch <strong>you must remember</strong> to apply your new database migration (migrate forward). Whenever you switch back to master <strong>you must remember</strong> to migrate backward to the database schema expected by the code in master. <strong>Git doesn&#8217;t know which migration your database should be at.</strong> Sometimes I&#8217;m distracted and I forget.&nbsp;:(</p>
+<p>As always, it gets more interesting when you have project collaborators because they might push changes to migration files and <strong>you must pay attention and remember</strong> to actually apply these migrations in the right order. We will examine one such scenario in&nbsp;detail.</p>
+<h1>Adventures with Overlooked Database&nbsp;Migrations</h1>
+<p>Let&#8217;s call the actors Sparkles and Rainbows. Sparkles and Rainbows are both contributing to the same project and so they each regularly push or pull from the same &#8220;upstream&#8221; git repository. However, they each use their own local database for development. As far as the database goes, git is only tracking South migration files. Here is our&nbsp;scenario.</p>
 <ol>
-<li>Sparkles pushes Migration Files 1, 2, 3 to upstream and applies these migrations to their local db in that order. </li>
+<li>Sparkles pushes Migration Files 1, 2, 3 to upstream and applies these migrations to their local db in that&nbsp;order. </li>
 <li>Rainbows pulls Migration Files 1, 2, 3 from upstream and applies them to their local db in that order.<blockquote>
-<p>All is well so far. The trouble is about to start.</p>
+<p>All is well so far. The trouble is about to&nbsp;start.</p>
 </blockquote>
 </li>
-<li>Sparkles reverses Migration 3 in their local database (backward migration to Migration 2) and pushes a delete of the Migration 3 file to upstream.</li>
-<li>Rainbows pulls from upstream: the Migration 3 file no longer exists at <code>HEAD</code> <strong>but it must also be reversed in the local db</strong>! Alas, Rainbows does not perform the backward migration. :(</li>
-<li>Life goes on and Sparkles now adds Migration Files 4 and 5, applies the migrations locally and pushes the files to upstream. </li>
+<li>Sparkles reverses Migration 3 in their local database (backward migration to Migration 2) and pushes a delete of the Migration 3 file to&nbsp;upstream.</li>
+<li>Rainbows pulls from upstream: the Migration 3 file no longer exists at <code>HEAD</code> <strong>but it must also be reversed in the local db</strong>! Alas, Rainbows does not perform the backward migration.&nbsp;:(</li>
+<li>Life goes on and Sparkles now adds Migration Files 4 and 5, applies the migrations locally and pushes the files to&nbsp;upstream. </li>
 <li>Rainbows happily pulls Migrations Files 4 and 5 and applies them to their local db. <blockquote>
-<p>Notice that Sparkles' migration history is now 1-2-4-5 but Rainbows' migration history is 1-2-3-4-5, but 3 is nolonger part of the up-to-date project! </p>
+<p>Notice that Sparkles&#8217; migration history is now 1-2-4-5 but Rainbows&#8217; migration history is 1-2-3-4-5, but 3 is nolonger part of the up-to-date&nbsp;project! </p>
 </blockquote>
 </li>
 </ol>
-<p>At some point Rainbows will encounter Django or South errors, depending on the nature of the migrations, because the database doesn't match the expected schema. No worries, though, it's git, it's South: you can go back in time and fix things.</p>
-<p>I was recently in Rainbows' position. I finally noticed that something was wrong with my database when South started refusing to apply the latest migration from upstream, telling me "Sorry! I can't drop table TaskArea, it doesn't exist!" </p>
+<p>At some point Rainbows will encounter Django or South errors, depending on the nature of the migrations, because the database doesn&#8217;t match the expected schema. No worries, though, it&#8217;s git, it&#8217;s South: you can go back in time and fix&nbsp;things.</p>
+<p>I was recently in Rainbows&#8217; position. I finally noticed that something was wrong with my database when South started refusing to apply the latest migration from upstream, telling me &#8220;Sorry! I can&#8217;t drop table TaskArea, it doesn&#8217;t&nbsp;exist!&#8221; </p>
 <div class="highlight"><pre><span class="n">tasks</span><span class="o">:</span><span class="mi">0011</span><span class="n">_auto__del_taskarea__del_field_task_area__add_field_taskkeyword_name</span>
 <span class="n">FATAL</span> <span class="n">ERROR</span> <span class="o">-</span> <span class="n">The</span> <span class="n">following</span> <span class="n">SQL</span> <span class="n">query</span> <span class="n">failed</span><span class="o">:</span> <span class="n">DROP</span> <span class="n">TABLE</span> <span class="n">tasks_taskarea</span> <span class="n">CASCADE</span><span class="o">;</span>
 <span class="n">The</span> <span class="n">error</span> <span class="n">was</span><span class="o">:</span> <span class="o">(</span><span class="mi">1051</span><span class="o">,</span> <span class="s2">&quot;Unknown table &#39;tasks_taskarea&#39;&quot;</span><span class="o">)</span>
@@ -58,13 +58,13 @@
 </pre></div>
 
 
-<p>In my instance of the Sparkles-Rainbows story, Migration 3 and Migration 5 both drop the TaskArea table; I'm trying to apply Migration 5, and South  grumbles in response because I had never reversed Migration 3. As far as South knows, there's no such thing as a TaskArea table. </p>
-<p>Let's take a look at my migration history, which is conveniently stored in the database itself:</p>
+<p>In my instance of the Sparkles-Rainbows story, Migration 3 and Migration 5 both drop the TaskArea table; I&#8217;m trying to apply Migration 5, and South  grumbles in response because I had never reversed Migration 3. As far as South knows, there&#8217;s no such thing as a TaskArea&nbsp;table. </p>
+<p>Let&#8217;s take a look at my migration history, which is conveniently stored in the database&nbsp;itself:</p>
 <div class="highlight"><pre><span class="k">select</span> <span class="n">migration</span> <span class="k">from</span> <span class="n">south_migrationhistory</span> <span class="k">where</span> <span class="n">app_name</span><span class="o">=</span><span class="s2">&quot;tasks&quot;</span><span class="p">;</span>
 </pre></div>
 
 
-<p>The output is shown below. The lines of interest are <code>0010_auth__del</code> and <code>0010_auto__chg</code>; I'm trying to apply migration <code>0011</code> but I can't, because it's the same migration as <code>0010_auto__del</code>, which should have been reversed a few commits ago. </p>
+<p>The output is shown below. The lines of interest are <code>0010_auth__del</code> and <code>0010_auto__chg</code>; I&#8217;m trying to apply migration <code>0011</code> but I can&#8217;t, because it&#8217;s the same migration as <code>0010_auto__del</code>, which should have been reversed a few commits&nbsp;ago. </p>
 <div class="highlight"><pre>+------------------------------------------------------------------------------+
 |  migration                                                                   |
 +------------------------------------------------------------------------------+
@@ -83,15 +83,15 @@
 </pre></div>
 
 
-<p>I want to migrate backwards until <code>0009</code>, but I can't do that directly because the migration file for <code>0010_auto__del</code> is not part of <code>HEAD</code> anymore, just like Migration 3 in the story of Sparkles and Rainbows, so South doesn't know what to do. However, that migration does exist in a previous commit, so let's go back in time.</p>
-<p>I figure out which commit added the migration I need to reverse:</p>
+<p>I want to migrate backwards until <code>0009</code>, but I can&#8217;t do that directly because the migration file for <code>0010_auto__del</code> is not part of <code>HEAD</code> anymore, just like Migration 3 in the story of Sparkles and Rainbows, so South doesn&#8217;t know what to do. However, that migration does exist in a previous commit, so let&#8217;s go back in&nbsp;time.</p>
+<p>I figure out which commit added the migration I need to&nbsp;reverse:</p>
 <div class="highlight"><pre><span class="c"># Display commit log along with names of files affected by each commit. </span>
 <span class="c"># Once in less, I searched for &#39;0010_auto__del&#39; to get to the right commit.</span>
 git log --name-status <span class="p">|</span> less
 </pre></div>
 
 
-<p>What that key information, the following sequence of commands tidies everything up:</p>
+<p>What that key information, the following sequence of commands tidies everything&nbsp;up:</p>
 <div class="highlight"><pre><span class="c"># Switch to the commit that added migration 0010_auto__del</span>
 git checkout e67fe32c
 <span class="c"># Migrate backward to a happy migration; I chose 0008 to be safe. </span>
@@ -124,16 +124,13 @@ git checkout master
                 </div>
             </section>
  !-->
-        <section id="extras" class="body">
-        </section><!-- /#extras -->
-
         <footer id="contentinfo" class="body">
 
                 <address id="about" class="vcard body">
                 <a rel="license" href="http://creativecommons.org/licenses/by-nc-sa/4.0/"><img alt="Creative Commons License" style="border-width:0" src="https://i.creativecommons.org/l/by-nc-sa/4.0/88x31.png" /></a><br />This work by <span xmlns:cc="http://creativecommons.org/ns#" property="cc:attributionName">Maja Frydrychowicz</span> is licensed under a <a rel="license" href="http://creativecommons.org/licenses/by-nc-sa/4.0/">Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International License</a>.
                 </address><!-- /#about -->
 
-                <p>Proudly powered by <a href="http://getpelican.com/">Pelican</a>, which takes great advantage of <a href="http://python.org">Python</a>.<br/> Based on theme by <a href="http://coding.smashingmagazine.com/2009/08/04/designing-a-html-5-layout-from-scratch/">Smashing Magazine</a>, thanks!</p>
+                <p id="acknowledge">Proudly powered by <a href="http://getpelican.com/">Pelican</a>, which takes great advantage of <a href="http://python.org">Python</a>.<br/> Based on theme by <a href="http://coding.smashingmagazine.com/2009/08/04/designing-a-html-5-layout-from-scratch/">Smashing Magazine</a>, thanks!</p>
         </footer><!-- /#contentinfo -->
 
     <script type="text/javascript">
