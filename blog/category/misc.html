@@ -6,14 +6,14 @@
         <meta charset="utf-8" />
         <title>err &err - misc</title>
         <link rel="stylesheet" type="text/css"
-         href="../theme/css/main.css">
+         href="http://www.erranderr.com/blog/theme/css/main.css">
          </link>
         <link rel="stylesheet" type="text/css"
-         href="../theme/css/mobile.css"
+         href="http://www.erranderr.com/blog/theme/css/mobile.css"
          media="only screen and (max-device-width: 1000px)">
          </link>
         <link href="http://www.erranderr.com/blog/feeds/all.atom.xml" type="application/atom+xml" rel="alternate" title="err &err Atom Feed" />
-        <link href="../theme/images/icons/favicon.png" rel="icon" type="image/png">
+        <link href="http://www.erranderr.com/blog/theme/images/icons/favicon.png" rel="icon" type="image/png">
         <!--[if IE]>
             <script src="http://html5shiv.googlecode.com/svn/trunk/html5.js"></script>
         <![endif]-->
@@ -28,25 +28,25 @@
         <header id="banner" class="body">
                 <h1><a href="http://www.erranderr.com/">err &err </a></h1>
                 <nav><ul>
-                    <li><a href="../pages/about-maja.html">About</a></li>
-                    <li><a href="../pages/contact-maja.html">Contact</a></li>
-                    <li><a href="../archives.html">Archives</a></li>
+                    <li><a href="http://www.erranderr.com/blog/pages/about-maja.html">About</a></li>
+                    <li><a href="http://www.erranderr.com/blog/pages/contact-maja.html">Contact</a></li>
+                    <li><a href="http://www.erranderr.com/blog/archives.html">Archives</a></li>
                     <li><a href="http://www.erranderr.com/blog/feeds/all.atom.xml" type="application/atom+xml" rel="alternate" alt="RSS Feed">Feed</a></li>
                 </ul></nav>
         </header><!-- /#banner -->
 
             <aside id="featured" class="body">
                 <article>
-                    <h1 class="entry-title"><a href="../opw-snapshot.html">Snapshots from my <span class="caps">OPW</span> Internship with Mozilla <span class="caps">QA</span></a></h1>
+                    <h1 class="entry-title"><a href="http://www.erranderr.com/blog/opw-snapshot.html">Snapshots from my <span class="caps">OPW</span> Internship with Mozilla <span class="caps">QA</span></a></h1>
                     <p>Throughout my <span class="caps">OPW</span><sup id="fnref:1"><a class="footnote-ref" href="#fn:1" rel="footnote">1</a></sup> internship with Mozilla <span class="caps">QA</span><sup id="fnref:2"><a class="footnote-ref" href="#fn:2" rel="footnote">2</a></sup> I&#8217;ve been keeping an informal log in outline form<sup id="fnref:3"><a class="footnote-ref" href="#fn:3" rel="footnote">3</a></sup>. In it, I briefly describe what I accomplish (or fail to accomplish) each day, problems I encounter, who I talk to about them, which meetings I attend, what I read, useful tricks I learn, etc. So far, I have about 60-days worth of these tiny log entries about Mozilla.  Here&#8217;s what they look&nbsp;like:</p>
 <div style="text-align:center">
-<p><img alt="Checkvist Mozilla Log Screenshot" src="/images/checkvist-screenshot.png" /></p>
+<p><img alt="Checkvist Mozilla Log Screenshot" src="http://www.erranderr.com/blog/images/checkvist-screenshot.png" /></p>
 </div>
 <p>Day-to-day, the log helps me answer questions like &#8220;How did I solve this weird configuration problem three weeks ago?&#8221; or &#8220;What should I ask about at the next team meeting?&#8221; Writing also generally helps me think through a task, and the log is a quick and effective outlet for that. The other major benefit is that I can take a step back and see the overall progress of my&nbsp;projects.</p>
 <h1>So, what&#8217;s it like being an intern with Mozilla <span class="caps">QA</span>?</h1>
 <p>I&#8217;m so glad you asked! First, some&nbsp;context. </p>
 <ul>
-<li><span class="caps">OPW</span> interns <a href="../remote-work.html">work remotely</a>.</li>
+<li><span class="caps">OPW</span> interns <a href="http://www.erranderr.com/blog/remote-work.html">work remotely</a>.</li>
 <li>The internship position I applied for is called &#8220;<a href="https://wiki.mozilla.org/GNOME_Outreach_Summer2014#Mozilla_Bug_Wrangler_.28Desktop_QA.29">Bug Wrangler</a>&#8220;, which refers to tasks like reproducing and triaging incoming Firefox bugs, but I&#8217;ve actually (mostly) been doing Django web&nbsp;development.</li>
 </ul>
 <p><em><strong>To future interns</strong>: as in my case, there can be some flexibility about your internship activities, and during your application process, you&#8217;ll narrow down what you will work on. The mentor I applied to offered a Django project as an option under the Bug Wrangler umbrella, and that was more in line with my interests and experience than bug triage, so that&#8217;s what I chose to focus&nbsp;on.</em></p>
@@ -66,7 +66,7 @@
 <h2>Week&nbsp;5</h2>
 <p>At this point, I was just about finished with my first substantial <a href="https://github.com/mozilla/oneanddone/pull/124">pull request to One and Done</a>. My changes broke some unit tests, which caused me to discover that some of our test data was using the wrong data type: a regular Python dictionary instead of a Django <a href="https://docs.djangoproject.com/en/1.4/ref/request-response/#django.http.QueryDict">QueryDict</a>.&nbsp;Cool.</p>
 <p>I actually spent a bunch of time getting the unit tests to run in my dev environment, which is on a Linux virtual machine. My local copy of the project is stored in a directory that is shared between my Linux guest <span class="caps">OS</span> and Windows host <span class="caps">OS</span>, which happens to rely on file permissions that the <a href="https://nose.readthedocs.org/en/latest/">nose</a> testing library doesn&#8217;t like. In the end, I chose to have a clone of the project in a non-shared directory that I used just for running unit&nbsp;tests.</p>
-<p>My work log also describes in detail how unintended changes to my development branch in git turned my Github pull request into a giant, unreadable mess. Aaah! (Be careful what you branch from and what you merge with, friends.) I had to close my original pull request and make a new, clean one, which was fairly embarrassing. Now I remember that on that day my friend and I were co-working in my apartment to battle <a href="../remote-work.html">the loneliness of remote work</a>, and she generously listened to me venting my misery about the incident. :) In retrospect, I learned a lot about&nbsp;git.</p>
+<p>My work log also describes in detail how unintended changes to my development branch in git turned my Github pull request into a giant, unreadable mess. Aaah! (Be careful what you branch from and what you merge with, friends.) I had to close my original pull request and make a new, clean one, which was fairly embarrassing. Now I remember that on that day my friend and I were co-working in my apartment to battle <a href="http://www.erranderr.com/blog/remote-work.html">the loneliness of remote work</a>, and she generously listened to me venting my misery about the incident. :) In retrospect, I learned a lot about&nbsp;git.</p>
 <p>Later that week, that same pull request got merged and I started investigating a bug I ran into in one of the libraries our project relies on, which involved asking some questions on <span class="caps">IRC</span>. </p>
 <p>All around, a good&nbsp;week.</p>
 <h2>Week&nbsp;9</h2>
@@ -74,7 +74,7 @@
 <ul>
 <li>updating the <a href="https://github.com/mozilla/oneanddone/pull/139">One and Done readme</a> to make it easier for new contributors to get&nbsp;started, </li>
 <li>adding tests to a <a href="https://github.com/mozilla/oneanddone/pull/151">pull request about form validation</a> I had made the week&nbsp;before,</li>
-<li>cleaning up an article about my <a href="../borked-migrations.html">database migration blunders</a>.</li>
+<li>cleaning up an article about my <a href="http://www.erranderr.com/blog/borked-migrations.html">database migration blunders</a>.</li>
 </ul>
 <p>I also contributed my first few code reviews: the week before I missed an issue that someone else caught (doh!), but this week I found something that needed to be fixed (yay!). This was cool because I found the problem by simply taking the time to understand code that was <a href="https://github.com/mozilla/oneanddone/pull/154#discussion_r14786905">mostly mysterious to me</a>. Bonus: I learned a bit about <a href="http://www.voidspace.org.uk/python/mock/">Mock and patch</a>.</p>
 <p>By the end of the week, I was focused on sketching out the functionality and implementation of a <a href="https://bugzilla.mozilla.org/show_bug.cgi?id=1030972">new One and Done feature</a>. I enjoyed working with the project managers to define the feature requirements. Figuring out how to implement them required a few more weeks of research and learning on my part, but it all worked out in the&nbsp;end.</p>
@@ -103,9 +103,9 @@
         </abbr>
 
         <address class="vcard author">
-                By                         <a class="url fn" href="../author/maja-z-frydrychowicz.html">Maja Z. Frydrychowicz</a>
+                By                         <a class="url fn" href="http://www.erranderr.com/blog/author/maja-z-frydrychowicz.html">Maja Z. Frydrychowicz</a>
         </address>
-<p>tags: <a href="../tag/opw.html">opw</a> <a href="../tag/mozilla.html">mozilla</a> <a href="../tag/foss.html">foss</a> </p>
+<p>tags: <a href="http://www.erranderr.com/blog/tag/opw.html">opw</a> <a href="http://www.erranderr.com/blog/tag/mozilla.html">mozilla</a> <a href="http://www.erranderr.com/blog/tag/foss.html">foss</a> </p>
 </footer><!-- /.post-info -->                </article>
             </aside><!-- /#featured -->
                 <section id="content" class="body">
@@ -115,7 +115,7 @@
 
             <li><article> <!-- class="hentry" -->
                 <header>
-                    <p><a href="../borked-migrations.html" rel="bookmark"
+                    <p><a href="http://www.erranderr.com/blog/borked-migrations.html" rel="bookmark"
                            title="Permalink to Database Migrations (“You know nothing, Version Control.”)">Database Migrations (&#8220;You know nothing, Version&nbsp;Control.&#8221;)</a></p>
                 </header>
 
@@ -123,14 +123,14 @@
                 <div class="entry-content">
                  include 'article_infos.html' Missing \{\%
                  article.summary Missing \{\{
-                <a class="readmore" href="../borked-migrations.html">read more</a>
+                <a class="readmore" href="http://www.erranderr.com/blog/borked-migrations.html">read more</a>
                 </div> -->
                 <!-- /.entry-content -->
             </article></li>
 
             <li><article> <!-- class="hentry" -->
                 <header>
-                    <p><a href="../osb14.html" rel="bookmark"
+                    <p><a href="http://www.erranderr.com/blog/osb14.html" rel="bookmark"
                            title="Permalink to Open Source Bridge 2014">Open Source Bridge&nbsp;2014</a></p>
                 </header>
 
@@ -138,14 +138,14 @@
                 <div class="entry-content">
                  include 'article_infos.html' Missing \{\%
                  article.summary Missing \{\{
-                <a class="readmore" href="../osb14.html">read more</a>
+                <a class="readmore" href="http://www.erranderr.com/blog/osb14.html">read more</a>
                 </div> -->
                 <!-- /.entry-content -->
             </article></li>
 
             <li><article> <!-- class="hentry" -->
                 <header>
-                    <p><a href="../one-and-done-osbrige.html" rel="bookmark"
+                    <p><a href="http://www.erranderr.com/blog/one-and-done-osbrige.html" rel="bookmark"
                            title="Permalink to “One and Done” comes to Open Source Bridge 2014!"><span class="dquo">&#8220;</span>One and Done&#8221; comes to Open Source Bridge&nbsp;2014!</a></p>
                 </header>
 
@@ -153,14 +153,14 @@
                 <div class="entry-content">
                  include 'article_infos.html' Missing \{\%
                  article.summary Missing \{\{
-                <a class="readmore" href="../one-and-done-osbrige.html">read more</a>
+                <a class="readmore" href="http://www.erranderr.com/blog/one-and-done-osbrige.html">read more</a>
                 </div> -->
                 <!-- /.entry-content -->
             </article></li>
 
             <li><article> <!-- class="hentry" -->
                 <header>
-                    <p><a href="../bugzilla-github.html" rel="bookmark"
+                    <p><a href="http://www.erranderr.com/blog/bugzilla-github.html" rel="bookmark"
                            title="Permalink to Project Management at Mozilla">Project Management at&nbsp;Mozilla</a></p>
                 </header>
 
@@ -168,14 +168,14 @@
                 <div class="entry-content">
                  include 'article_infos.html' Missing \{\%
                  article.summary Missing \{\{
-                <a class="readmore" href="../bugzilla-github.html">read more</a>
+                <a class="readmore" href="http://www.erranderr.com/blog/bugzilla-github.html">read more</a>
                 </div> -->
                 <!-- /.entry-content -->
             </article></li>
 
             <li><article> <!-- class="hentry" -->
                 <header>
-                    <p><a href="../remote-work.html" rel="bookmark"
+                    <p><a href="http://www.erranderr.com/blog/remote-work.html" rel="bookmark"
                            title="Permalink to Working Remotely is… Hard? Different? Strange?">Working Remotely is&#8230; Hard? Different?&nbsp;Strange?</a></p>
                 </header>
 
@@ -183,14 +183,14 @@
                 <div class="entry-content">
                  include 'article_infos.html' Missing \{\%
                  article.summary Missing \{\{
-                <a class="readmore" href="../remote-work.html">read more</a>
+                <a class="readmore" href="http://www.erranderr.com/blog/remote-work.html">read more</a>
                 </div> -->
                 <!-- /.entry-content -->
             </article></li>
 
             <li><article> <!-- class="hentry" -->
                 <header>
-                    <p><a href="../applying-to-opw.html" rel="bookmark"
+                    <p><a href="http://www.erranderr.com/blog/applying-to-opw.html" rel="bookmark"
                            title="Permalink to Dive In! Applying to the FOSS Outreach Program for Women">Dive In! Applying to the <span class="caps">FOSS</span> Outreach Program for&nbsp;Women</a></p>
                 </header>
 
@@ -198,7 +198,7 @@
                 <div class="entry-content">
                  include 'article_infos.html' Missing \{\%
                  article.summary Missing \{\{
-                <a class="readmore" href="../applying-to-opw.html">read more</a>
+                <a class="readmore" href="http://www.erranderr.com/blog/applying-to-opw.html">read more</a>
                 </div> -->
                 <!-- /.entry-content -->
             </article></li>
