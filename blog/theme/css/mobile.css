@@ -20,8 +20,9 @@ body{
 	padding: 5px;
 }
 
+
 #banner nav a {
-    font-size: 1.5em;
+    font-size: 1.3em;
 }
 
 #banner nav a:link, #banner nav a:visited {
@@ -35,11 +36,11 @@ body{
 .post-info{
 	width: 40%;
 	padding: 0px;
-	font-size:1em;
+	font-size:2em;
 }
 
 #contentinfo {
-	font-size: 75%;
+	font-size: 40%;
 	text-align: left;
 }
 
@@ -68,7 +69,7 @@ pre {
   }
 
   #banner nav a {
-    font-size: 1.5em;
+    font-size: 1.3em;
   }
 
   .entry-title{
