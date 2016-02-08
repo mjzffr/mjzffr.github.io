@@ -4,7 +4,7 @@
         <meta name="author" content="Maja Frydrychowicz" />
         <!--<meta name="viewport" content="width=device-width, initial-scale=1"/>-->
         <meta charset="utf-8" />
-        <title>err & err (less & less) - database</title>
+        <title>err &err - database</title>
         <link rel="stylesheet" type="text/css"
          href="../theme/css/main.css">
          </link>
@@ -12,7 +12,7 @@
          href="../theme/css/mobile.css"
          media="only screen and (max-device-width: 1000px)">
          </link>
-        <link href="http://www.erranderr.com/blog/feeds/all.atom.xml" type="application/atom+xml" rel="alternate" title="err & err (less & less) Atom Feed" />
+        <link href="http://www.erranderr.com/blog/feeds/all.atom.xml" type="application/atom+xml" rel="alternate" title="err &err Atom Feed" />
         <link href="../theme/images/icons/favicon.png" rel="icon" type="image/png">
         <!--[if IE]>
             <script src="http://html5shiv.googlecode.com/svn/trunk/html5.js"></script>
@@ -26,7 +26,7 @@
             and less. &ndash;<a href="https://en.wikipedia.org/wiki/Piet_Hein_(scientist)">Piet Hein<a/></div>
         </div>
         <header id="banner" class="body">
-                <h1><a href="http://www.erranderr.com/">err & err (less & less) </a></h1>
+                <h1><a href="http://www.erranderr.com/">err &err </a></h1>
                 <nav><ul>
                     <li><a href="../pages/about-maja.html">About</a></li>
                     <li><a href="../pages/contact-maja.html">Contact</a></li>
@@ -97,21 +97,21 @@
 
 <p>I want to migrate backwards until <code>0009</code>, but I can&#8217;t do that directly because the migration file for <code>0010_auto__del</code> is not part of <code>HEAD</code> anymore, just like Migration 3 in the story of Sparkles and Rainbows, so South doesn&#8217;t know what to do. However, that migration does exist in a previous commit, so let&#8217;s go back in&nbsp;time.</p>
 <p>I figure out which commit added the migration I need to&nbsp;reverse:</p>
-<div class="highlight"><pre><span class="c"># Display commit log along with names of files affected by each commit. </span>
-<span class="c"># Once in less, I searched for &#39;0010_auto__del&#39; to get to the right commit.</span>
+<div class="highlight"><pre><span class="c1"># Display commit log along with names of files affected by each commit. </span>
+<span class="c1"># Once in less, I searched for &#39;0010_auto__del&#39; to get to the right commit.</span>
 git log --name-status <span class="p">|</span> less
 </pre></div>
 
 
 <p>What that key information, the following sequence of commands tidies everything&nbsp;up:</p>
-<div class="highlight"><pre><span class="c"># Switch to the commit that added migration 0010_auto__del</span>
+<div class="highlight"><pre><span class="c1"># Switch to the commit that added migration 0010_auto__del</span>
 git checkout e67fe32c
-<span class="c"># Migrate backward to a happy migration; I chose 0008 to be safe. </span>
-<span class="c"># ./manage.py migrate [appname] [migration]</span>
+<span class="c1"># Migrate backward to a happy migration; I chose 0008 to be safe. </span>
+<span class="c1"># ./manage.py migrate [appname] [migration]</span>
 ./manage.py migrate oneanddone.tasks 0008
 git checkout master
-<span class="c"># Sync the database and migrate all the way forward using the most </span>
-<span class="c"># up-to-date migrations.</span>
+<span class="c1"># Sync the database and migrate all the way forward using the most </span>
+<span class="c1"># up-to-date migrations.</span>
 ./manage.py syncdb <span class="o">&amp;&amp;</span> ./manage.py migrate
 </pre></div><footer class="post-info">
         <abbr class="published" title="2014-07-04T18:00:00-04:00">

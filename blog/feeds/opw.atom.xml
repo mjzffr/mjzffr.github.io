@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
-<feed xmlns="http://www.w3.org/2005/Atom"><title>err &amp; err (less &amp; less)</title><link href="http://www.erranderr.com/blog/" rel="alternate"></link><link href="http://www.erranderr.com/blog/feeds/opw.atom.xml" rel="self"></link><id>http://www.erranderr.com/blog/</id><updated>2014-08-23T00:00:00-04:00</updated><entry><title>Snapshots from my OPW Internship with Mozilla QA</title><link href="http://www.erranderr.com/blog/opw-snapshot.html" rel="alternate"></link><updated>2014-08-23T00:00:00-04:00</updated><author><name>Maja Z. Frydrychowicz</name></author><id>tag:www.erranderr.com,2014-08-07:blog/opw-snapshot.html</id><summary type="html">&lt;p&gt;Throughout my &lt;span class="caps"&gt;OPW&lt;/span&gt;&lt;sup id="fnref:1"&gt;&lt;a class="footnote-ref" href="#fn:1" rel="footnote"&gt;1&lt;/a&gt;&lt;/sup&gt; internship with Mozilla &lt;span class="caps"&gt;QA&lt;/span&gt;&lt;sup id="fnref:2"&gt;&lt;a class="footnote-ref" href="#fn:2" rel="footnote"&gt;2&lt;/a&gt;&lt;/sup&gt; I&amp;#8217;ve been keeping an informal log in outline form&lt;sup id="fnref:3"&gt;&lt;a class="footnote-ref" href="#fn:3" rel="footnote"&gt;3&lt;/a&gt;&lt;/sup&gt;. In it, I briefly describe what I accomplish (or fail to accomplish) each day, problems I encounter, who I talk to about them, which meetings I attend, what I read, useful tricks I learn, etc. So far, I have about 60-days worth of these tiny log entries about Mozilla.  Here&amp;#8217;s what they look&amp;nbsp;like:&lt;/p&gt;
+<feed xmlns="http://www.w3.org/2005/Atom"><title>err &amp;err</title><link href="http://www.erranderr.com/blog/" rel="alternate"></link><link href="http://www.erranderr.com/blog/feeds/opw.atom.xml" rel="self"></link><id>http://www.erranderr.com/blog/</id><updated>2014-08-23T00:00:00-04:00</updated><entry><title>Snapshots from my OPW Internship with Mozilla QA</title><link href="http://www.erranderr.com/blog/opw-snapshot.html" rel="alternate"></link><updated>2014-08-23T00:00:00-04:00</updated><author><name>Maja Z. Frydrychowicz</name></author><id>tag:www.erranderr.com,2014-08-07:blog/opw-snapshot.html</id><summary type="html">&lt;p&gt;Throughout my &lt;span class="caps"&gt;OPW&lt;/span&gt;&lt;sup id="fnref:1"&gt;&lt;a class="footnote-ref" href="#fn:1" rel="footnote"&gt;1&lt;/a&gt;&lt;/sup&gt; internship with Mozilla &lt;span class="caps"&gt;QA&lt;/span&gt;&lt;sup id="fnref:2"&gt;&lt;a class="footnote-ref" href="#fn:2" rel="footnote"&gt;2&lt;/a&gt;&lt;/sup&gt; I&amp;#8217;ve been keeping an informal log in outline form&lt;sup id="fnref:3"&gt;&lt;a class="footnote-ref" href="#fn:3" rel="footnote"&gt;3&lt;/a&gt;&lt;/sup&gt;. In it, I briefly describe what I accomplish (or fail to accomplish) each day, problems I encounter, who I talk to about them, which meetings I attend, what I read, useful tricks I learn, etc. So far, I have about 60-days worth of these tiny log entries about Mozilla.  Here&amp;#8217;s what they look&amp;nbsp;like:&lt;/p&gt;
 &lt;div style="text-align:center"&gt;
-&lt;p&gt;&lt;img alt="Checkvist Mozilla Log Screenshot" src="images/checkvist-screenshot.png" /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img alt="Checkvist Mozilla Log Screenshot" src="/images/checkvist-screenshot.png" /&gt;&lt;/p&gt;
 &lt;/div&gt;
 &lt;p&gt;Day-to-day, the log helps me answer questions like &amp;#8220;How did I solve this weird configuration problem three weeks ago?&amp;#8221; or &amp;#8220;What should I ask about at the next team meeting?&amp;#8221; Writing also generally helps me think through a task, and the log is a quick and effective outlet for that. The other major benefit is that I can take a step back and see the overall progress of my&amp;nbsp;projects.&lt;/p&gt;
 &lt;h1&gt;So, what&amp;#8217;s it like being an intern with Mozilla &lt;span class="caps"&gt;QA&lt;/span&gt;?&lt;/h1&gt;
@@ -113,21 +113,21 @@
 
 &lt;p&gt;I want to migrate backwards until &lt;code&gt;0009&lt;/code&gt;, but I can&amp;#8217;t do that directly because the migration file for &lt;code&gt;0010_auto__del&lt;/code&gt; is not part of &lt;code&gt;HEAD&lt;/code&gt; anymore, just like Migration 3 in the story of Sparkles and Rainbows, so South doesn&amp;#8217;t know what to do. However, that migration does exist in a previous commit, so let&amp;#8217;s go back in&amp;nbsp;time.&lt;/p&gt;
 &lt;p&gt;I figure out which commit added the migration I need to&amp;nbsp;reverse:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span class="c"&gt;# Display commit log along with names of files affected by each commit. &lt;/span&gt;
-&lt;span class="c"&gt;# Once in less, I searched for &amp;#39;0010_auto__del&amp;#39; to get to the right commit.&lt;/span&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span class="c1"&gt;# Display commit log along with names of files affected by each commit. &lt;/span&gt;
+&lt;span class="c1"&gt;# Once in less, I searched for &amp;#39;0010_auto__del&amp;#39; to get to the right commit.&lt;/span&gt;
 git log --name-status &lt;span class="p"&gt;|&lt;/span&gt; less
 &lt;/pre&gt;&lt;/div&gt;
 
 
 &lt;p&gt;What that key information, the following sequence of commands tidies everything&amp;nbsp;up:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span class="c"&gt;# Switch to the commit that added migration 0010_auto__del&lt;/span&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span class="c1"&gt;# Switch to the commit that added migration 0010_auto__del&lt;/span&gt;
 git checkout e67fe32c
-&lt;span class="c"&gt;# Migrate backward to a happy migration; I chose 0008 to be safe. &lt;/span&gt;
-&lt;span class="c"&gt;# ./manage.py migrate [appname] [migration]&lt;/span&gt;
+&lt;span class="c1"&gt;# Migrate backward to a happy migration; I chose 0008 to be safe. &lt;/span&gt;
+&lt;span class="c1"&gt;# ./manage.py migrate [appname] [migration]&lt;/span&gt;
 ./manage.py migrate oneanddone.tasks 0008
 git checkout master
-&lt;span class="c"&gt;# Sync the database and migrate all the way forward using the most &lt;/span&gt;
-&lt;span class="c"&gt;# up-to-date migrations.&lt;/span&gt;
+&lt;span class="c1"&gt;# Sync the database and migrate all the way forward using the most &lt;/span&gt;
+&lt;span class="c1"&gt;# up-to-date migrations.&lt;/span&gt;
 ./manage.py syncdb &lt;span class="o"&gt;&amp;amp;&amp;amp;&lt;/span&gt; ./manage.py migrate
 &lt;/pre&gt;&lt;/div&gt;</summary><category term="mozilla"></category><category term="foss"></category><category term="opw"></category><category term="south"></category><category term="git"></category><category term="database"></category><category term="django"></category></entry><entry><title>Open Source Bridge 2014</title><link href="http://www.erranderr.com/blog/osb14.html" rel="alternate"></link><updated>2014-07-01T00:00:00-04:00</updated><author><name>Maja Z. Frydrychowicz</name></author><id>tag:www.erranderr.com,2014-06-30:blog/osb14.html</id><summary type="html">&lt;p&gt;Open Source Bridge 2014 was my first conference experience in about 5 years and my first non-academic conference. It had a great mix of talks and was thoughtfully organized and super friendly. I learned about Firefox quality assurance, communication strategies, remote work, discrimination in the tech industry and being a better human. That mix could have been totally different though: during almost every session, there were 3-4 interesting talks competing for my attention, which is a good&amp;nbsp;thing.&lt;/p&gt;
 &lt;p&gt;Attendees were welcome to help out with conference logistics and encouraged to organize spontaneous, open meetings. For example, I spent a couple of hours volunteering as session chair, which amounts to helping each speaker set up for their talk, introducing them and giving them timing&amp;nbsp;cues. &lt;/p&gt;
