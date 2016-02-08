@@ -16,13 +16,12 @@ body{
 }
 
 #banner nav {
-	font-size: 1.8em;
 	margin: 0px auto 1em;
 	padding: 5px;
 }
 
 #banner nav a {
-    font-size: 1.8em;
+    font-size: 1.5em;
 }
 
 #banner nav a:link, #banner nav a:visited {
@@ -52,6 +51,8 @@ body{
 	font-size: 2em;
 }
 
+h1 {font-weight: 900;}
+
 pre {
 	font-size:115%;
 }
@@ -69,7 +70,6 @@ pre {
   #banner nav a {
     font-size: 1.5em;
   }
-
 
   .entry-title{
     font-size: 2em;
