@@ -38,7 +38,7 @@
                 <article>
                     <h1 class="entry-title"><a href="http://www.erranderr.com/blog/taskcluster-learning.html">First Experiment with&nbsp;TaskCluster</a></h1>
                     <p><a href="http://docs.taskcluster.net/">TaskCluster</a> is a new-ish continuous integration system made at Mozilla. It manages the scheduling and execution of tasks based on a graph of their dependencies. It&#8217;s a general <span class="caps">CI</span> tool, and could be used for any kind of job, not just Mozilla&nbsp;things. </p>
-<p>The example I describe here refers to a particular instance of TaskCluster: <a href="https://github.com/taskcluster/mozilla-taskcluster">mozilla-taskcluster</a><sup id="fnref:1"><a class="footnote-ref" href="#fn:1" rel="footnote">1</a></sup>. It runs tasks per check-in on the branches of Mozilla&#8217;s Mercurial repository and then posts results to <a href="https://github.com/mozilla/treeherder">Treeherder</a>. For now, the tasks can be configured to run in Docker images (Linux), but other platforms are in the works<sup id="fnref:2"><a class="footnote-ref" href="#fn:2" rel="footnote">2</a></sup>. </p>
+<p>However, the example I describe here refers to a Mozilla-centric use case of TaskCluster<sup id="fnref:1"><a class="footnote-ref" href="#fn:1" rel="footnote">1</a></sup>: tasks are run per check-in on the branches of Mozilla&#8217;s Mercurial repository and then results are posted to <a href="https://github.com/mozilla/treeherder">Treeherder</a>. For now, the tasks can be configured to run in Docker images (Linux), but other platforms are in the works<sup id="fnref:2"><a class="footnote-ref" href="#fn:2" rel="footnote">2</a></sup>. </p>
 <p>So, I want to schedule a task! I need to add a new task to the task graph that&#8217;s created for each revision submitted to hg.mozilla.org. (This is part of my work on deploying a suite of <a href="https://bugzilla.mozilla.org/show_bug.cgi?id=1227367">tests for the Marionette Python test runner</a>, i.e. testing the test harness&nbsp;itself.) </p>
 <p>The rest of this post describes what I learned while making <a href="https://hg.mozilla.org/try/rev/6b7479c4aa30">this work-in-progress</a>.</p>
 <h1>There are builds and there are&nbsp;tests</h1>
@@ -174,11 +174,13 @@
 <li><a href="http://docs.taskcluster.net/queue/api-docs/#createTask">createTask <span class="caps">API</span></a></li>
 <li><a href="http://docs.taskcluster.net/workers/">Workers</a></li>
 </ul>
+<h1>Acknowledgements</h1>
+<p>Thanks to <a href="http://code.v.igoro.us/">dustin</a> and others for corrections and&nbsp;feedback.</p>
 <div class="footnote">
 <hr />
 <ol>
 <li id="fn:1">
-<p><a href="http://docs.taskcluster.net/introduction/getting-started/#taskcluster-at-mozilla">TaskCluster at Mozilla</a>&#160;<a class="footnote-backref" href="#fnref:1" rev="footnote" title="Jump back to footnote 1 in the text">&#8617;</a></p>
+<p>This is accomplished in part thanks to <a href="https://github.com/taskcluster/mozilla-taskcluster">mozilla-taskcluster</a>, a service that links Mozilla&#8217;s hg repo to TaskCluster and creates each decision task. More at <a href="http://docs.taskcluster.net/introduction/getting-started/#taskcluster-at-mozilla">TaskCluster at Mozilla</a>&#160;<a class="footnote-backref" href="#fnref:1" rev="footnote" title="Jump back to footnote 1 in the text">&#8617;</a></p>
 </li>
 <li id="fn:2">
 <p>Run tasks on any platform thanks to <a href="http://docs.taskcluster.net/workers/generic-worker/">generic worker</a>&#160;<a class="footnote-backref" href="#fnref:2" rev="footnote" title="Jump back to footnote 2 in the text">&#8617;</a></p>
@@ -199,6 +201,10 @@
 </div><footer class="post-info">
         <abbr class="published" title="2016-02-09T00:00:00-05:00">
                 Date: 09 February 2016
+        </abbr>
+		<br />
+        <abbr class="modified" title="2016-02-16T00:00:00-05:00">
+                Last update: 16 February 2016
         </abbr>
 
         <address class="vcard author">
