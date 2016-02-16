@@ -29,7 +29,6 @@
                 <h1><a href="http://www.erranderr.com/">err &err </a></h1>
                 <nav><ul>
                     <li><a href="http://www.erranderr.com/blog/pages/about-maja.html">About</a></li>
-                    <li><a href="http://www.erranderr.com/blog/pages/contact-maja.html">Contact</a></li>
                     <li><a href="http://www.erranderr.com/blog/archives.html">Archives</a></li>
                     <li><a href="http://www.erranderr.com/blog/feeds/all.atom.xml" type="application/atom+xml" rel="alternate" alt="RSS Feed">Feed</a></li>
                 </ul></nav>
@@ -37,81 +36,196 @@
 
             <aside id="featured" class="body">
                 <article>
-                    <h1 class="entry-title"><a href="http://www.erranderr.com/blog/opw-snapshot.html">Snapshots from my <span class="caps">OPW</span> Internship with Mozilla <span class="caps">QA</span></a></h1>
-                    <p>Throughout my <span class="caps">OPW</span><sup id="fnref:1"><a class="footnote-ref" href="#fn:1" rel="footnote">1</a></sup> internship with Mozilla <span class="caps">QA</span><sup id="fnref:2"><a class="footnote-ref" href="#fn:2" rel="footnote">2</a></sup> I&#8217;ve been keeping an informal log in outline form<sup id="fnref:3"><a class="footnote-ref" href="#fn:3" rel="footnote">3</a></sup>. In it, I briefly describe what I accomplish (or fail to accomplish) each day, problems I encounter, who I talk to about them, which meetings I attend, what I read, useful tricks I learn, etc. So far, I have about 60-days worth of these tiny log entries about Mozilla.  Here&#8217;s what they look&nbsp;like:</p>
-<div style="text-align:center">
-<p><img alt="Checkvist Mozilla Log Screenshot" src="http://www.erranderr.com/blog/images/checkvist-screenshot.png" /></p>
-</div>
-<p>Day-to-day, the log helps me answer questions like &#8220;How did I solve this weird configuration problem three weeks ago?&#8221; or &#8220;What should I ask about at the next team meeting?&#8221; Writing also generally helps me think through a task, and the log is a quick and effective outlet for that. The other major benefit is that I can take a step back and see the overall progress of my&nbsp;projects.</p>
-<h1>So, what&#8217;s it like being an intern with Mozilla <span class="caps">QA</span>?</h1>
-<p>I&#8217;m so glad you asked! First, some&nbsp;context. </p>
+                    <h1 class="entry-title"><a href="http://www.erranderr.com/blog/taskcluster-learning.html">First Experiment with&nbsp;TaskCluster</a></h1>
+                    <p><a href="http://docs.taskcluster.net/">TaskCluster</a> is a new-ish continuous integration system made at Mozilla. It manages the scheduling and execution of tasks based on a graph of their dependencies. It&#8217;s a general <span class="caps">CI</span> tool, and could be used for any kind of job, not just Mozilla&nbsp;things. </p>
+<p>The example I describe here refers to a particular instance of TaskCluster: <a href="https://github.com/taskcluster/mozilla-taskcluster">mozilla-taskcluster</a><sup id="fnref:1"><a class="footnote-ref" href="#fn:1" rel="footnote">1</a></sup>. It runs tasks per check-in on the branches of Mozilla&#8217;s Mercurial repository and then posts results to <a href="https://github.com/mozilla/treeherder">Treeherder</a>. For now, the tasks can be configured to run in Docker images (Linux), but other platforms are in the works<sup id="fnref:2"><a class="footnote-ref" href="#fn:2" rel="footnote">2</a></sup>. </p>
+<p>So, I want to schedule a task! I need to add a new task to the task graph that&#8217;s created for each revision submitted to hg.mozilla.org. (This is part of my work on deploying a suite of <a href="https://bugzilla.mozilla.org/show_bug.cgi?id=1227367">tests for the Marionette Python test runner</a>, i.e. testing the test harness&nbsp;itself.) </p>
+<p>The rest of this post describes what I learned while making <a href="https://hg.mozilla.org/try/rev/6b7479c4aa30">this work-in-progress</a>.</p>
+<h1>There are builds and there are&nbsp;tests</h1>
+<p>mozilla-taskcluster operates based on the info under <a href="https://dxr.mozilla.org/mozilla-central/source/testing/taskcluster/tasks"><code>testing/taskcluster/tasks</code></a> in Mozilla&#8217;s source tree, where there are yaml files that describe tasks. Specific tasks can inherit common configuration options from base yaml&nbsp;files. </p>
+<p>The yaml files are organized into two main categories of tasks: builds and tests. This is just a convention in mozilla-taskcluster about how to group task configurations; <span class="caps">TC</span> itself doesn&#8217;t actually know or care whether a task is a build or a&nbsp;test.</p>
+<p>The task I&#8217;m creating doesn&#8217;t quite fit into either category: it runs harness tests that just exercise the Python runner code in <a href="http://marionette-client.readthedocs.org">marionette_client</a>, so I only need a source checkout, not a Firefox build. I&#8217;d like these tests to run quickly without having to wait around for a build. Another example of such a task is the recently-created <a href="https://hg.mozilla.org/mozilla-central/rev/4b34c9d1a31a">ESLint task</a>.</p>
+<h1>Scheduling a&nbsp;task</h1>
+<p>Just adding a yaml file that describes your new task under <code>testing/taskcluster/tasks</code> isn&#8217;t enough to get it scheduled: you must also add it to the list of tasks in <code>base_jobs.yml</code>, and define an identifier for your task in <code>base_job_flags.yml</code>. This identifier is used in <code>base_jobs.yml</code>, and also by people who want to run your task when pushing to <a href="https://wiki.mozilla.org/ReleaseEngineering/TryServer">try</a>.</p>
+<p>How does scheduling work? First a <a href="http://docs.taskcluster.net/introduction/getting-started/#decision-tasks-and-task-graphs">decision task</a> generates a <em>task graph</em>, which describes all the tasks and their relationships. More precisely, it looks at <code>base_jobs.yml</code> and other yaml files in <code>testing/taskcluster/tasks</code> and spits out a json artifact, <code>graph.json</code><sup id="fnref:3"><a class="footnote-ref" href="#fn:3" rel="footnote">3</a></sup>. Then, <code>graph.json</code> gets sent to <span class="caps">TC</span>&#8217;s <a href="http://docs.taskcluster.net/queue/api-docs/#createTask"><code>createTask</code></a> endpoint, which takes care of the actual&nbsp;scheduling.  </p>
+<p>In the excerpt below, you can see a task definition with a <code>requires</code> field and you can recognize a lot of fields that are in common with the &#8216;task&#8217; section of the yaml files under <code>testing/taskcluster/tasks/</code>.</p>
+<div class="highlight"><pre><span class="p">{</span>
+<span class="s2">&quot;tasks&quot;</span><span class="o">:</span> <span class="p">[</span>
+    <span class="p">{</span>
+      <span class="s2">&quot;requires&quot;</span><span class="o">:</span> <span class="p">[</span>
+        <span class="c1">// id of a build task that this task depends on</span>
+        <span class="s2">&quot;fZ42HVdDQ-KFFycr9PxptA&quot;</span>  
+      <span class="p">],</span> 
+      <span class="s2">&quot;task&quot;</span><span class="o">:</span> <span class="p">{</span>
+        <span class="s2">&quot;taskId&quot;</span><span class="o">:</span> <span class="s2">&quot;c2VD_eCgQyeUDVOjsmQZSg&quot;</span>
+        <span class="s2">&quot;extra&quot;</span><span class="o">:</span> <span class="p">{</span>
+          <span class="s2">&quot;treeherder&quot;</span><span class="o">:</span> <span class="p">{</span>
+              <span class="s2">&quot;groupName&quot;</span><span class="o">:</span> <span class="s2">&quot;Reftest&quot;</span><span class="p">,</span> 
+              <span class="s2">&quot;groupSymbol&quot;</span><span class="o">:</span> <span class="s2">&quot;tc-R&quot;</span><span class="p">,</span> 
+          <span class="p">},</span> 
+        <span class="p">},</span> 
+        <span class="s2">&quot;metadata&quot;</span><span class="o">:</span> <span class="p">{</span>
+          <span class="s2">&quot;description&quot;</span><span class="o">:</span> <span class="s2">&quot;Reftest test run 1&quot;</span><span class="p">,</span> 
+          <span class="s2">&quot;name&quot;</span><span class="o">:</span> <span class="s2">&quot;[TC] Reftest&quot;</span><span class="p">,</span> 
+        <span class="c1">//...</span>
+  <span class="p">]</span>
+<span class="p">}</span>
+</pre></div>
+
+
+<p>For now at least, a major assumption in the task-graph creation process seems to be that <em>test</em> tasks can depend on <em>build</em> tasks and <em>build</em> tasks don&#8217;t really<sup id="fnref:4"><a class="footnote-ref" href="#fn:4" rel="footnote">4</a></sup> depend on anything.&nbsp;So:</p>
 <ul>
-<li><span class="caps">OPW</span> interns <a href="http://www.erranderr.com/blog/remote-work.html">work remotely</a>.</li>
-<li>The internship position I applied for is called &#8220;<a href="https://wiki.mozilla.org/GNOME_Outreach_Summer2014#Mozilla_Bug_Wrangler_.28Desktop_QA.29">Bug Wrangler</a>&#8220;, which refers to tasks like reproducing and triaging incoming Firefox bugs, but I&#8217;ve actually (mostly) been doing Django web&nbsp;development.</li>
+<li>If you want your tasks to run for every push to a Mozilla hg branch, add it to the list of <strong>builds</strong> in <code>base_jobs.yml</code>. (Aside: I&#8217;m not sure how branches are configured &#8212; like, can you have your task only run on inbound but not on&nbsp;aurora?) </li>
+<li>If you want your task to run after certain build tasks succeed, add it to the list of <strong>tests</strong> in <code>base_jobs.yml</code> and specify which build tasks it depends&nbsp;on.</li>
+<li>Other than the above, I don&#8217;t see any way to specify a dependency between task A and task B in <code>testing/taskcluster/tasks</code>.</li>
 </ul>
-<p><em><strong>To future interns</strong>: as in my case, there can be some flexibility about your internship activities, and during your application process, you&#8217;ll narrow down what you will work on. The mentor I applied to offered a Django project as an option under the Bug Wrangler umbrella, and that was more in line with my interests and experience than bug triage, so that&#8217;s what I chose to focus&nbsp;on.</em></p>
-<p>Based on my handy log, I&#8217;ll answer a slightly more specific&nbsp;question:</p>
-<blockquote>
-<blockquote>
-<p><span class="dquo">&#8220;</span>What did Maja do during a typical week while working on a Django project for Mozilla <span class="caps">QA</span>?&#8221;</p>
-</blockquote>
-</blockquote>
-<h2>Routines</h2>
-<p>Often, I start my day by skimming my latest &#8220;bug mail&#8221; (updates from Bugzilla) and checking my Bugzilla dashboard to see if I need to follow up on anything&nbsp;immediately. </p>
-<p>The other regular occurrence is about 2 hours of video meetings per week. I meet with my mentor once a week to discuss my general progress and my post-internship plans. I lurk at one <span class="caps">QA</span> team meeting almost every week, where I mostly don&#8217;t have enough context to understand much. My mentor filled me in on some things and my understanding gradually improved. There are also two regular meetings for <a href="https://github.com/mozilla/oneanddone">One and Done</a>, the project I&#8217;m contributing to: a weekly technical meeting to discuss the design of new features, and a biweekly check-in meeting with project managers, developers and a few key&nbsp;users.</p>
-<h2>Week&nbsp;3</h2>
-<p>The early weeks of the internship involved a lot of reading and trying things out, of course. At this point, I was finishing up the official Django tutorial as well as responding to some administrative requests about the&nbsp;internship. </p>
-<p>Just for fun, I used vim throughout my Django learnings to rediscover some handy vim commands. I also applied the tutorial concepts to the One and Done source code as much as I could, and thus discovered what other parts of Django I need to become familiar with, like generic class-based&nbsp;views. </p>
-<p>I gradually became more familiar with how the One and Done code is structured by looking at how its models are used, poking at its URLconf, and populating my local database with example&nbsp;data.</p>
-<h2>Week&nbsp;5</h2>
-<p>At this point, I was just about finished with my first substantial <a href="https://github.com/mozilla/oneanddone/pull/124">pull request to One and Done</a>. My changes broke some unit tests, which caused me to discover that some of our test data was using the wrong data type: a regular Python dictionary instead of a Django <a href="https://docs.djangoproject.com/en/1.4/ref/request-response/#django.http.QueryDict">QueryDict</a>.&nbsp;Cool.</p>
-<p>I actually spent a bunch of time getting the unit tests to run in my dev environment, which is on a Linux virtual machine. My local copy of the project is stored in a directory that is shared between my Linux guest <span class="caps">OS</span> and Windows host <span class="caps">OS</span>, which happens to rely on file permissions that the <a href="https://nose.readthedocs.org/en/latest/">nose</a> testing library doesn&#8217;t like. In the end, I chose to have a clone of the project in a non-shared directory that I used just for running unit&nbsp;tests.</p>
-<p>My work log also describes in detail how unintended changes to my development branch in git turned my Github pull request into a giant, unreadable mess. Aaah! (Be careful what you branch from and what you merge with, friends.) I had to close my original pull request and make a new, clean one, which was fairly embarrassing. Now I remember that on that day my friend and I were co-working in my apartment to battle <a href="http://www.erranderr.com/blog/remote-work.html">the loneliness of remote work</a>, and she generously listened to me venting my misery about the incident. :) In retrospect, I learned a lot about&nbsp;git.</p>
-<p>Later that week, that same pull request got merged and I started investigating a bug I ran into in one of the libraries our project relies on, which involved asking some questions on <span class="caps">IRC</span>. </p>
-<p>All around, a good&nbsp;week.</p>
-<h2>Week&nbsp;9</h2>
-<p>First I finished up a couple of things I had started&nbsp;earlier:</p>
+<p>So, I added <code>marionette-harness</code> under <code>builds</code>. Recall, my task isn&#8217;t a build task, but it doesn&#8217;t depend on a build, so it&#8217;s not a test, so I&#8217;ll treat it like a&nbsp;build.</p>
+<div class="highlight"><pre><span class="c1"># in base_job_flags.yml</span>
+<span class="l l-Scalar l-Scalar-Plain">builds</span><span class="p p-Indicator">:</span>
+  <span class="c1"># ...</span>
+  <span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">marionette-harness</span>
+
+<span class="c1"># in base_jobs.yml</span>
+<span class="l l-Scalar l-Scalar-Plain">builds</span><span class="p p-Indicator">:</span>
+  <span class="c1"># ...</span>
+  <span class="l l-Scalar l-Scalar-Plain">marionette-harness</span><span class="p p-Indicator">:</span>
+    <span class="l l-Scalar l-Scalar-Plain">platforms</span><span class="p p-Indicator">:</span>
+      <span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">Linux64</span>
+    <span class="l l-Scalar l-Scalar-Plain">types</span><span class="p p-Indicator">:</span>
+      <span class="l l-Scalar l-Scalar-Plain">opt</span><span class="p p-Indicator">:</span>
+        <span class="l l-Scalar l-Scalar-Plain">task</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">tasks/tests/harness_marionette.yml</span>
+</pre></div>
+
+
+<p>This will allow me to trigger my task with the following try syntax: <code>try: -b o -p marionette-harness</code>.&nbsp;Cool.</p>
+<h1>Make your task do&nbsp;stuff</h1>
+<p>Now I have to add some stuff to <code>tasks/tests/harness_marionette.yml</code>. Many of my choices here are based on the work done for the <a href="https://hg.mozilla.org/mozilla-central/rev/4b34c9d1a31a">ESLint task</a>. I created a base task called <code>harness_test.yml</code> by mostly copying bits and pieces from the basic build task, <code>build.yml</code> and making a few small changes. The actual task, <code>harness_marionette.yml</code> inherits from <code>harness_test.yml</code> and defines specifics like Treeherder symbols and the command to&nbsp;run.</p>
+<h2>The&nbsp;command</h2>
+<p>The heart of the task is in <code>task.payload.command</code>. You could chain a bunch of shell commands together directly in this field of the yaml file, but it&#8217;s better not to. Instead, it&#8217;s common to call a TaskCluster-friendly shell script that&#8217;s available in your task&#8217;s environment. For example, the <a href="https://dxr.mozilla.org/mozilla-central/source/testing/docker/desktop-test"><code>desktop-test</code></a> docker image has a script called <code>test.sh</code> through which you can call the <a href="https://wiki.mozilla.org/ReleaseEngineering/Mozharness">mozharness</a> script for your tests. There&#8217;s a similar <code>build.sh</code> script on <code>desktop-build</code>. Both of these scripts depend on environment variables set elsewhere in your task definition, or in the Docker image used by your task. The environment might also provide utilities like <code>tc-vcs</code>, which is used for checking out Mozilla&nbsp;source.</p>
+<div class="highlight"><pre><span class="c1"># in harness_marionette.yml</span>
+<span class="l l-Scalar l-Scalar-Plain">payload</span><span class="p p-Indicator">:</span>
+  <span class="l l-Scalar l-Scalar-Plain">command</span><span class="p p-Indicator">:</span>
+    <span class="l l-Scalar l-Scalar-Plain">+ bash</span>
+    <span class="l l-Scalar l-Scalar-Plain">+ -cx</span>
+    <span class="l l-Scalar l-Scalar-Plain">+ &gt;</span>
+        <span class="l l-Scalar l-Scalar-Plain">tc-vcs checkout ./gecko {{base_repository}} {{head_repository}} {{head_rev}} {{head_ref}} &amp;&amp;</span>
+        <span class="l l-Scalar l-Scalar-Plain">cd gecko &amp;&amp;</span>
+        <span class="l l-Scalar l-Scalar-Plain">./mach marionette-harness-test</span>
+</pre></div>
+
+
+<p>My task&#8217;s <code>payload.command</code> should be moved into a custom shell script, but for now it just chains together the source checkout and a call to <a href="https://developer.mozilla.org/en-US/docs/Mozilla/Developer_guide/mach">mach</a>. It&#8217;s not terrible of me to use mach in this case because I expect my task to work in a build environment, but most tests would likely call&nbsp;mozharness.</p>
+<h1>Configuring the task&#8217;s&nbsp;environment</h1>
+<p>Where should the task run? What resources should it have access to? This was probably the hardest piece for me to figure&nbsp;out.</p>
+<h2>docker-worker</h2>
+<p>My task will run in a docker image using a <a href="http://docs.taskcluster.net/workers/docker-worker/">docker-worker</a><sup id="fnref:5"><a class="footnote-ref" href="#fn:5" rel="footnote">5</a></sup>. The image, called <code>desktop-build</code>, is defined in-tree under <a href="https://dxr.mozilla.org/mozilla-central/source/testing/docker/desktop-build"><code>testing/docker</code></a>. There are many other images defined there, but I only considered <code>desktop-build</code> versus <code>desktop-test</code>. I opted for <code>desktop-build</code> because <code>desktop-test</code> seems to contain mozharness-related stuff that I don&#8217;t need for&nbsp;now.</p>
+<div class="highlight"><pre><span class="c1"># harness_test.yml</span>
+<span class="l l-Scalar l-Scalar-Plain">image</span><span class="p p-Indicator">:</span>
+   <span class="l l-Scalar l-Scalar-Plain">type</span><span class="p p-Indicator">:</span> <span class="s">&#39;task-image&#39;</span>
+   <span class="l l-Scalar l-Scalar-Plain">path</span><span class="p p-Indicator">:</span> <span class="s">&#39;public/image.tar&#39;</span>
+   <span class="l l-Scalar l-Scalar-Plain">taskId</span><span class="p p-Indicator">:</span> <span class="s">&#39;{{#task_id_for_image}}desktop-build{{/task_id_for_image}}&#39;</span>
+</pre></div>
+
+
+<p>The image is stored as an artifact of another <span class="caps">TC</span> task, which makes it a &#8216;task-image&#8217;. Which artifact? The default is <code>public/image.tar</code>. Which task do I find the image in? The magic incantation <code>'{{#task_id_for_image}}desktop-build{{/task_id_for_image}}'</code> somehow<sup id="fnref:6"><a class="footnote-ref" href="#fn:6" rel="footnote">6</a></sup> obtains the correct <span class="caps">ID</span>, and if I look at a particular run of my task, the above snippet does indeed get populated with an actual <code>taskId</code>. </p>
+<div class="highlight"><pre><span class="s2">&quot;image&quot;</span><span class="o">:</span> <span class="p">{</span>
+  <span class="s2">&quot;path&quot;</span><span class="o">:</span> <span class="s2">&quot;public/image.tar&quot;</span><span class="p">,</span>
+  <span class="c1">// Mystery task that makes a desktop-build image for us. Thanks, mystery task!</span>
+  <span class="s2">&quot;taskId&quot;</span><span class="o">:</span> <span class="s2">&quot;aqt_YdmkTvugYB5b-OvvJw&quot;</span><span class="p">,</span> 
+  <span class="s2">&quot;type&quot;</span><span class="o">:</span> <span class="s2">&quot;task-image&quot;</span>
+<span class="p">}</span>
+</pre></div>
+
+
+<p>Snooping around in the handy <a href="https://tools.taskcluster.net/task-inspector/">Task Inspector</a>, I found that the magical mystery task is defined in <a href="https://dxr.mozilla.org/mozilla-central/source/testing/taskcluster/tasks/image.yml">image.yml</a> and runs <a href="https://dxr.mozilla.org/mozilla-central/source/testing/docker/image_builder/bin/build_image.sh"><code>build_image.sh</code></a>. Fun. It&#8217;s also quite convenient to <a href="http://docs.taskcluster.net/presentations/TC-102/#/images-00">define and test your own custom image</a>.</p>
+<h2>Other details that I mostly&nbsp;ignored</h2>
+<div class="highlight"><pre><span class="c1"># in harness_test.yml</span>
+<span class="l l-Scalar l-Scalar-Plain">scopes</span><span class="p p-Indicator">:</span>
+  <span class="c1"># Nearly all of our build tasks use tc-vcs</span>
+  <span class="p p-Indicator">-</span> <span class="s">&#39;docker-worker:cache:level-{{level}}-{{project}}-tc-vcs&#39;</span>
+<span class="l l-Scalar l-Scalar-Plain">cache</span><span class="p p-Indicator">:</span>
+   <span class="c1"># The taskcluster-vcs tooling stores the large clone caches in this</span>
+   <span class="c1"># directory and will reuse them for new requests this saves about 20s~</span>
+   <span class="c1"># and is the most generic cache possible.</span>
+   <span class="l l-Scalar l-Scalar-Plain">level-{{level}}-{{project}}-tc-vcs</span><span class="p p-Indicator">:</span> <span class="s">&#39;/home/worker/.tc-vcs&#39;</span>
+</pre></div>
+
+
 <ul>
-<li>updating the <a href="https://github.com/mozilla/oneanddone/pull/139">One and Done readme</a> to make it easier for new contributors to get&nbsp;started, </li>
-<li>adding tests to a <a href="https://github.com/mozilla/oneanddone/pull/151">pull request about form validation</a> I had made the week&nbsp;before,</li>
-<li>cleaning up an article about my <a href="http://www.erranderr.com/blog/borked-migrations.html">database migration blunders</a>.</li>
+<li><em>Routes</em> allow your task to be looked up in the task index. This isn&#8217;t necessary in my case so I just omitted routes&nbsp;altogether.</li>
+<li><em>Scopes</em> are permissions for your tasks, and I just copied the scope that is used for checking out source&nbsp;code.</li>
+<li><em>workerType</em> is a configuration for managing the workers that run tasks. To me, this was a choice between <code>b2gtest</code> and <code>b2gbuild</code>, which aren&#8217;t specific to b2g anyway. <code>b2gtest</code> is more lightweight, I hear, which suits my harness-test task&nbsp;fine.</li>
+<li>I had to include a few dummy values under <code>extra</code> in <code>harness_test.yml</code>, like <code>build_name</code>, just because they are expected in <em>build</em> tasks. I don&#8217;t use these values for anything, but my task fails to run if I don&#8217;t include&nbsp;them.</li>
 </ul>
-<p>I also contributed my first few code reviews: the week before I missed an issue that someone else caught (doh!), but this week I found something that needed to be fixed (yay!). This was cool because I found the problem by simply taking the time to understand code that was <a href="https://github.com/mozilla/oneanddone/pull/154#discussion_r14786905">mostly mysterious to me</a>. Bonus: I learned a bit about <a href="http://www.voidspace.org.uk/python/mock/">Mock and patch</a>.</p>
-<p>By the end of the week, I was focused on sketching out the functionality and implementation of a <a href="https://bugzilla.mozilla.org/show_bug.cgi?id=1030972">new One and Done feature</a>. I enjoyed working with the project managers to define the feature requirements. Figuring out how to implement them required a few more weeks of research and learning on my part, but it all worked out in the&nbsp;end.</p>
-<h1>This is why I like work&nbsp;logs!</h1>
-<p>Reviewing my work log to write this article was eye-opening for me, especially due to the perspective it offers of the ups and downs I experienced during my internship. On some days, I felt quite frustrated, stuck, discouraged, and all that bad stuff. So, I like how the log shows that feeling crappy for a few days here and there totally doesn&#8217;t matter overall. I learned a lot in the past couple of months and it&#8217;s incredibly satisfying to see that itemized in one big&nbsp;list.</p>
+<h1>Yay for trial and&nbsp;error</h1>
+<ul>
+<li>If you have syntax errors in your yaml, the Decision task will fail. If this happens during a try push, look under Job Details &gt; Inspect Task to fine useful error&nbsp;messages.</li>
+<li>Iterating on your task is pretty easy. Aside from pushing to try, you can <a href="http://docs.taskcluster.net/presentations/TC-101/#/run-locally-environment">run tasks locally using vagrant</a> and you can build a task graph locally as well with <code>mach taskcluster-graph</code>. </li>
+</ul>
+<h1>Resources</h1>
+<p>Blog posts from other TaskCluster users at&nbsp;Mozilla:</p>
+<ul>
+<li><a href="https://ehsanakhgari.org/blog/2015-09-29/my-experience-adding-new-build-type-taskcluster">https://ehsanakhgari.org/blog/2015-09-29/my-experience-adding-new-build-type-taskcluster</a></li>
+<li><a href="https://elvis314.wordpress.com/2015/11/09/adventures-in-task-cluster-running-tests-locally/">https://elvis314.wordpress.com/2015/11/09/adventures-in-task-cluster-running-tests-locally/</a></li>
+<li><a href="https://elvis314.wordpress.com/2015/11/11/adventures-in-task-cluster-running-a-custom-docker-image/">https://elvis314.wordpress.com/2015/11/11/adventures-in-task-cluster-running-a-custom-docker-image/</a></li>
+</ul>
+<p>There is lots of great documentation at <a href="https://docs.taskcluster.net">docs.taskcluster.net</a>, but these sections were especially useful to&nbsp;me:</p>
+<ul>
+<li><a href="http://docs.taskcluster.net/queue/api-docs/#createTask">createTask <span class="caps">API</span></a></li>
+<li><a href="http://docs.taskcluster.net/workers/">Workers</a></li>
+</ul>
 <div class="footnote">
 <hr />
 <ol>
 <li id="fn:1">
-<p>Outreach Program for Women&#160;<a class="footnote-backref" href="#fnref:1" rev="footnote" title="Jump back to footnote 1 in the text">&#8617;</a></p>
+<p><a href="http://docs.taskcluster.net/introduction/getting-started/#taskcluster-at-mozilla">TaskCluster at Mozilla</a>&#160;<a class="footnote-backref" href="#fnref:1" rev="footnote" title="Jump back to footnote 1 in the text">&#8617;</a></p>
 </li>
 <li id="fn:2">
-<p>Quality Assurance&#160;<a class="footnote-backref" href="#fnref:2" rev="footnote" title="Jump back to footnote 2 in the text">&#8617;</a></p>
+<p>Run tasks on any platform thanks to <a href="http://docs.taskcluster.net/workers/generic-worker/">generic worker</a>&#160;<a class="footnote-backref" href="#fnref:2" rev="footnote" title="Jump back to footnote 2 in the text">&#8617;</a></p>
 </li>
 <li id="fn:3">
-<p>I write the log using <a href="https://checkvist.com/">Checkvist</a>. It&#8217;s fantastic. I did the same while at Hacker School.&#160;<a class="footnote-backref" href="#fnref:3" rev="footnote" title="Jump back to footnote 3 in the text">&#8617;</a></p>
+<p>To look at a <code>graph.json</code> artifact, go to <a href="http://treeherder.mozilla.org/">Treeherder</a>, click a green &#8216;D&#8217; job, then Job details &gt; Inspect Task, where you should find a list of artifacts.&#160;<a class="footnote-backref" href="#fnref:3" rev="footnote" title="Jump back to footnote 3 in the text">&#8617;</a></p>
+</li>
+<li id="fn:4">
+<p>It&#8217;s not <em>really</em> true that build tasks don&#8217;t depend on anything. Any task that uses a task-image depends on the task that creates the image. I&#8217;m sorry for saying &#8216;task&#8217; five times in every sentence, by the way.&#160;<a class="footnote-backref" href="#fnref:4" rev="footnote" title="Jump back to footnote 4 in the text">&#8617;</a></p>
+</li>
+<li id="fn:5">
+<p>&#8230;as opposed to a <a href="http://docs.taskcluster.net/workers/generic-worker/">generic worker</a>.&#160;<a class="footnote-backref" href="#fnref:5" rev="footnote" title="Jump back to footnote 5 in the text">&#8617;</a></p>
+</li>
+<li id="fn:6">
+<p><code>{{#task_id_for_image}}</code> is an example of a predefined variable that we can use in our <span class="caps">TC</span> yaml files. Where do they come from? How do they get populated? I don&#8217;t know.&#160;<a class="footnote-backref" href="#fnref:6" rev="footnote" title="Jump back to footnote 6 in the text">&#8617;</a></p>
 </li>
 </ol>
 </div><footer class="post-info">
-        <abbr class="published" title="2014-08-07T00:00:00-04:00">
-                Date: 07 August 2014
-        </abbr>
-		<br />
-        <abbr class="modified" title="2014-08-23T00:00:00-04:00">
-                Last update: 23 August 2014
+        <abbr class="published" title="2016-02-09T00:00:00-05:00">
+                Date: 09 February 2016
         </abbr>
 
         <address class="vcard author">
                 By                         <a class="url fn" href="http://www.erranderr.com/blog/author/maja-frydrychowicz.html">Maja Frydrychowicz</a>
         </address>
-<p>tags: <a href="http://www.erranderr.com/blog/tag/opw.html">opw</a> <a href="http://www.erranderr.com/blog/tag/mozilla.html">mozilla</a> <a href="http://www.erranderr.com/blog/tag/foss.html">foss</a> </p>
+<p>tags: <a href="http://www.erranderr.com/blog/tag/mozilla.html">mozilla</a> <a href="http://www.erranderr.com/blog/tag/foss.html">foss</a> <a href="http://www.erranderr.com/blog/tag/ci.html">ci</a> </p>
 </footer><!-- /.post-info -->                </article>
             </aside><!-- /#featured -->
                 <section id="content" class="body">
                     <h1 class='first_heading'>Other articles</h1>
 
                     <ol id="posts-list" class="hfeed">
+
+            <li><article> <!-- class="hentry" -->
+                <header>
+                    <p><a href="http://www.erranderr.com/blog/opw-snapshot.html" rel="bookmark"
+                           title="Permalink to Snapshots from my OPW Internship with Mozilla QA">Snapshots from my <span class="caps">OPW</span> Internship with Mozilla <span class="caps">QA</span></a></p>
+                </header>
+
+                <!--
+                <div class="entry-content">
+                 include 'article_infos.html' Missing \{\%
+                 article.summary Missing \{\{
+                <a class="readmore" href="http://www.erranderr.com/blog/opw-snapshot.html">read more</a>
+                </div> -->
+                <!-- /.entry-content -->
+            </article></li>
 
             <li><article> <!-- class="hentry" -->
                 <header>

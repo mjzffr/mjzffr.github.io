@@ -4,7 +4,7 @@
         <meta name="author" content="Maja Frydrychowicz" />
         <!--<meta name="viewport" content="width=device-width, initial-scale=1"/>-->
         <meta charset="utf-8" />
-        <title>err &err</title>
+        <title>First Experiment with TaskCluster</title>
         <link rel="stylesheet" type="text/css"
          href="http://www.erranderr.com/blog/theme/css/main.css">
          </link>
@@ -33,11 +33,16 @@
                     <li><a href="http://www.erranderr.com/blog/feeds/all.atom.xml" type="application/atom+xml" rel="alternate" alt="RSS Feed">Feed</a></li>
                 </ul></nav>
         </header><!-- /#banner -->
+<section id="content" class="body">
+  <article>
+    <header>
+      <h1 class="entry-title">
+        <a href="http://www.erranderr.com/blog/taskcluster-learning.html" rel="bookmark"
+           title="Permalink to First Experiment with TaskCluster">First Experiment with&nbsp;TaskCluster</a></h1>
+    </header>
 
-            <aside id="featured" class="body">
-                <article>
-                    <h1 class="entry-title"><a href="http://www.erranderr.com/blog/taskcluster-learning.html">First Experiment with&nbsp;TaskCluster</a></h1>
-                    <p><a href="http://docs.taskcluster.net/">TaskCluster</a> is a new-ish continuous integration system made at Mozilla. It manages the scheduling and execution of tasks based on a graph of their dependencies. It&#8217;s a general <span class="caps">CI</span> tool, and could be used for any kind of job, not just Mozilla&nbsp;things. </p>
+    <div class="entry-content">
+      <p><a href="http://docs.taskcluster.net/">TaskCluster</a> is a new-ish continuous integration system made at Mozilla. It manages the scheduling and execution of tasks based on a graph of their dependencies. It&#8217;s a general <span class="caps">CI</span> tool, and could be used for any kind of job, not just Mozilla&nbsp;things. </p>
 <p>The example I describe here refers to a particular instance of TaskCluster: <a href="https://github.com/taskcluster/mozilla-taskcluster">mozilla-taskcluster</a><sup id="fnref:1"><a class="footnote-ref" href="#fn:1" rel="footnote">1</a></sup>. It runs tasks per check-in on the branches of Mozilla&#8217;s Mercurial repository and then posts results to <a href="https://github.com/mozilla/treeherder">Treeherder</a>. For now, the tasks can be configured to run in Docker images (Linux), but other platforms are in the works<sup id="fnref:2"><a class="footnote-ref" href="#fn:2" rel="footnote">2</a></sup>. </p>
 <p>So, I want to schedule a task! I need to add a new task to the task graph that&#8217;s created for each revision submitted to hg.mozilla.org. (This is part of my work on deploying a suite of <a href="https://bugzilla.mozilla.org/show_bug.cgi?id=1227367">tests for the Marionette Python test runner</a>, i.e. testing the test harness&nbsp;itself.) </p>
 <p>The rest of this post describes what I learned while making <a href="https://hg.mozilla.org/try/rev/6b7479c4aa30">this work-in-progress</a>.</p>
@@ -196,7 +201,8 @@
 <p><code>{{#task_id_for_image}}</code> is an example of a predefined variable that we can use in our <span class="caps">TC</span> yaml files. Where do they come from? How do they get populated? I don&#8217;t know.&#160;<a class="footnote-backref" href="#fnref:6" rev="footnote" title="Jump back to footnote 6 in the text">&#8617;</a></p>
 </li>
 </ol>
-</div><footer class="post-info">
+</div>
+<footer class="post-info">
         <abbr class="published" title="2016-02-09T00:00:00-05:00">
                 Date: 09 February 2016
         </abbr>
@@ -205,119 +211,10 @@
                 By                         <a class="url fn" href="http://www.erranderr.com/blog/author/maja-frydrychowicz.html">Maja Frydrychowicz</a>
         </address>
 <p>tags: <a href="http://www.erranderr.com/blog/tag/mozilla.html">mozilla</a> <a href="http://www.erranderr.com/blog/tag/foss.html">foss</a> <a href="http://www.erranderr.com/blog/tag/ci.html">ci</a> </p>
-</footer><!-- /.post-info -->                </article>
-            </aside><!-- /#featured -->
-                <section id="content" class="body">
-                    <h1 class='first_heading'>Other articles</h1>
+</footer><!-- /.post-info -->    </div><!-- /.entry-content -->
 
-                    <ol id="posts-list" class="hfeed">
-
-            <li><article> <!-- class="hentry" -->
-                <header>
-                    <p><a href="http://www.erranderr.com/blog/opw-snapshot.html" rel="bookmark"
-                           title="Permalink to Snapshots from my OPW Internship with Mozilla QA">Snapshots from my <span class="caps">OPW</span> Internship with Mozilla <span class="caps">QA</span></a></p>
-                </header>
-
-                <!--
-                <div class="entry-content">
-                 include 'article_infos.html' Missing \{\%
-                 article.summary Missing \{\{
-                <a class="readmore" href="http://www.erranderr.com/blog/opw-snapshot.html">read more</a>
-                </div> -->
-                <!-- /.entry-content -->
-            </article></li>
-
-            <li><article> <!-- class="hentry" -->
-                <header>
-                    <p><a href="http://www.erranderr.com/blog/borked-migrations.html" rel="bookmark"
-                           title="Permalink to Database Migrations (“You know nothing, Version Control.”)">Database Migrations (&#8220;You know nothing, Version&nbsp;Control.&#8221;)</a></p>
-                </header>
-
-                <!--
-                <div class="entry-content">
-                 include 'article_infos.html' Missing \{\%
-                 article.summary Missing \{\{
-                <a class="readmore" href="http://www.erranderr.com/blog/borked-migrations.html">read more</a>
-                </div> -->
-                <!-- /.entry-content -->
-            </article></li>
-
-            <li><article> <!-- class="hentry" -->
-                <header>
-                    <p><a href="http://www.erranderr.com/blog/osb14.html" rel="bookmark"
-                           title="Permalink to Open Source Bridge 2014">Open Source Bridge&nbsp;2014</a></p>
-                </header>
-
-                <!--
-                <div class="entry-content">
-                 include 'article_infos.html' Missing \{\%
-                 article.summary Missing \{\{
-                <a class="readmore" href="http://www.erranderr.com/blog/osb14.html">read more</a>
-                </div> -->
-                <!-- /.entry-content -->
-            </article></li>
-
-            <li><article> <!-- class="hentry" -->
-                <header>
-                    <p><a href="http://www.erranderr.com/blog/one-and-done-osbrige.html" rel="bookmark"
-                           title="Permalink to “One and Done” comes to Open Source Bridge 2014!"><span class="dquo">&#8220;</span>One and Done&#8221; comes to Open Source Bridge&nbsp;2014!</a></p>
-                </header>
-
-                <!--
-                <div class="entry-content">
-                 include 'article_infos.html' Missing \{\%
-                 article.summary Missing \{\{
-                <a class="readmore" href="http://www.erranderr.com/blog/one-and-done-osbrige.html">read more</a>
-                </div> -->
-                <!-- /.entry-content -->
-            </article></li>
-
-            <li><article> <!-- class="hentry" -->
-                <header>
-                    <p><a href="http://www.erranderr.com/blog/bugzilla-github.html" rel="bookmark"
-                           title="Permalink to Project Management at Mozilla">Project Management at&nbsp;Mozilla</a></p>
-                </header>
-
-                <!--
-                <div class="entry-content">
-                 include 'article_infos.html' Missing \{\%
-                 article.summary Missing \{\{
-                <a class="readmore" href="http://www.erranderr.com/blog/bugzilla-github.html">read more</a>
-                </div> -->
-                <!-- /.entry-content -->
-            </article></li>
-
-            <li><article> <!-- class="hentry" -->
-                <header>
-                    <p><a href="http://www.erranderr.com/blog/remote-work.html" rel="bookmark"
-                           title="Permalink to Working Remotely is… Hard? Different? Strange?">Working Remotely is&#8230; Hard? Different?&nbsp;Strange?</a></p>
-                </header>
-
-                <!--
-                <div class="entry-content">
-                 include 'article_infos.html' Missing \{\%
-                 article.summary Missing \{\{
-                <a class="readmore" href="http://www.erranderr.com/blog/remote-work.html">read more</a>
-                </div> -->
-                <!-- /.entry-content -->
-            </article></li>
-
-            <li><article> <!-- class="hentry" -->
-                <header>
-                    <p><a href="http://www.erranderr.com/blog/applying-to-opw.html" rel="bookmark"
-                           title="Permalink to Dive In! Applying to the FOSS Outreach Program for Women">Dive In! Applying to the <span class="caps">FOSS</span> Outreach Program for&nbsp;Women</a></p>
-                </header>
-
-                <!--
-                <div class="entry-content">
-                 include 'article_infos.html' Missing \{\%
-                 article.summary Missing \{\{
-                <a class="readmore" href="http://www.erranderr.com/blog/applying-to-opw.html">read more</a>
-                </div> -->
-                <!-- /.entry-content -->
-            </article></li>
-                </ol><!-- /#posts-list -->
-                </section><!-- /#content -->
+  </article>
+</section>
 <!--                    <section id="twitter-timeline" class="body">
                 <h1><a href="https://twitter.com/@impossibus">@impossibus</a> on Twitter</h1>
                 <div>
