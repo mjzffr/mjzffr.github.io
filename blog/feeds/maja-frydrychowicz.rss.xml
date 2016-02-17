@@ -37,7 +37,7 @@
 
 &lt;p&gt;For now at least, a major assumption in the task-graph creation process seems to be that &lt;em&gt;test&lt;/em&gt; tasks can depend on &lt;em&gt;build&lt;/em&gt; tasks and &lt;em&gt;build&lt;/em&gt; tasks don&amp;#8217;t really&lt;sup id="fnref:4"&gt;&lt;a class="footnote-ref" href="#fn:4" rel="footnote"&gt;4&lt;/a&gt;&lt;/sup&gt; depend on anything.&amp;nbsp;So:&lt;/p&gt;
 &lt;ul&gt;
-&lt;li&gt;If you want your tasks to run for every push to a Mozilla hg branch, add it to the list of &lt;strong&gt;builds&lt;/strong&gt; in &lt;code&gt;base_jobs.yml&lt;/code&gt;. (Aside: I&amp;#8217;m not sure how branches are configured &amp;#8212; like, can you have your task only run on inbound but not on&amp;nbsp;aurora?) &lt;/li&gt;
+&lt;li&gt;If you want your tasks to run for every push to a Mozilla hg branch, add it to the list of &lt;strong&gt;builds&lt;/strong&gt; in &lt;code&gt;base_jobs.yml&lt;/code&gt;. &lt;/li&gt;
 &lt;li&gt;If you want your task to run after certain build tasks succeed, add it to the list of &lt;strong&gt;tests&lt;/strong&gt; in &lt;code&gt;base_jobs.yml&lt;/code&gt; and specify which build tasks it depends&amp;nbsp;on.&lt;/li&gt;
 &lt;li&gt;Other than the above, I don&amp;#8217;t see any way to specify a dependency between task A and task B in &lt;code&gt;testing/taskcluster/tasks&lt;/code&gt;.&lt;/li&gt;
 &lt;/ul&gt;
@@ -137,7 +137,7 @@
 &lt;li&gt;&lt;a href="http://docs.taskcluster.net/workers/"&gt;Workers&lt;/a&gt;&lt;/li&gt;
 &lt;/ul&gt;
 &lt;h1&gt;Acknowledgements&lt;/h1&gt;
-&lt;p&gt;Thanks to &lt;a href="http://code.v.igoro.us/"&gt;dustin&lt;/a&gt; and others for corrections and&amp;nbsp;feedback.&lt;/p&gt;
+&lt;p&gt;Thanks to &lt;a href="http://code.v.igoro.us/"&gt;dustin&lt;/a&gt;, pmoore and others for corrections and&amp;nbsp;feedback.&lt;/p&gt;
 &lt;div class="footnote"&gt;
 &lt;hr /&gt;
 &lt;ol&gt;
@@ -160,7 +160,7 @@
 &lt;p&gt;&lt;code&gt;{{#task_id_for_image}}&lt;/code&gt; is an example of a predefined variable that we can use in our &lt;span class="caps"&gt;TC&lt;/span&gt; yaml files. Where do they come from? How do they get populated? I don&amp;#8217;t know.&amp;#160;&lt;a class="footnote-backref" href="#fnref:6" rev="footnote" title="Jump back to footnote 6 in the text"&gt;&amp;#8617;&lt;/a&gt;&lt;/p&gt;
 &lt;/li&gt;
 &lt;/ol&gt;
-&lt;/div&gt;</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">Maja Frydrychowicz</dc:creator><pubDate>Tue, 16 Feb 2016 00:00:00 -0500</pubDate><guid>tag:www.erranderr.com,2016-02-09:blog/taskcluster-learning.html</guid><category>mozilla</category><category>foss</category><category>ci</category></item><item><title>Snapshots from my OPW Internship with Mozilla QA</title><link>http://www.erranderr.com/blog/opw-snapshot.html</link><description>&lt;p&gt;Throughout my &lt;span class="caps"&gt;OPW&lt;/span&gt;&lt;sup id="fnref:1"&gt;&lt;a class="footnote-ref" href="#fn:1" rel="footnote"&gt;1&lt;/a&gt;&lt;/sup&gt; internship with Mozilla &lt;span class="caps"&gt;QA&lt;/span&gt;&lt;sup id="fnref:2"&gt;&lt;a class="footnote-ref" href="#fn:2" rel="footnote"&gt;2&lt;/a&gt;&lt;/sup&gt; I&amp;#8217;ve been keeping an informal log in outline form&lt;sup id="fnref:3"&gt;&lt;a class="footnote-ref" href="#fn:3" rel="footnote"&gt;3&lt;/a&gt;&lt;/sup&gt;. In it, I briefly describe what I accomplish (or fail to accomplish) each day, problems I encounter, who I talk to about them, which meetings I attend, what I read, useful tricks I learn, etc. So far, I have about 60-days worth of these tiny log entries about Mozilla.  Here&amp;#8217;s what they look&amp;nbsp;like:&lt;/p&gt;
+&lt;/div&gt;</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">Maja Frydrychowicz</dc:creator><pubDate>Tue, 16 Feb 2016 00:00:00 -0500</pubDate><guid>tag:www.erranderr.com,2016-02-09:blog/taskcluster-learning.html</guid><category>mozilla</category><category>foss</category><category>ci</category><category>taskcluster</category></item><item><title>Snapshots from my OPW Internship with Mozilla QA</title><link>http://www.erranderr.com/blog/opw-snapshot.html</link><description>&lt;p&gt;Throughout my &lt;span class="caps"&gt;OPW&lt;/span&gt;&lt;sup id="fnref:1"&gt;&lt;a class="footnote-ref" href="#fn:1" rel="footnote"&gt;1&lt;/a&gt;&lt;/sup&gt; internship with Mozilla &lt;span class="caps"&gt;QA&lt;/span&gt;&lt;sup id="fnref:2"&gt;&lt;a class="footnote-ref" href="#fn:2" rel="footnote"&gt;2&lt;/a&gt;&lt;/sup&gt; I&amp;#8217;ve been keeping an informal log in outline form&lt;sup id="fnref:3"&gt;&lt;a class="footnote-ref" href="#fn:3" rel="footnote"&gt;3&lt;/a&gt;&lt;/sup&gt;. In it, I briefly describe what I accomplish (or fail to accomplish) each day, problems I encounter, who I talk to about them, which meetings I attend, what I read, useful tricks I learn, etc. So far, I have about 60-days worth of these tiny log entries about Mozilla.  Here&amp;#8217;s what they look&amp;nbsp;like:&lt;/p&gt;
 &lt;div style="text-align:center"&gt;
 &lt;p&gt;&lt;img alt="Checkvist Mozilla Log Screenshot" src="http://www.erranderr.com/blog/images/checkvist-screenshot.png" /&gt;&lt;/p&gt;
 &lt;/div&gt;
