@@ -4,7 +4,7 @@
         <meta name="author" content="Maja Frydrychowicz" />
         <!--<meta name="viewport" content="width=device-width, initial-scale=1"/>-->
         <meta charset="utf-8" />
-        <title>err &err - taskcluster</title>
+        <title>Not Testing a Firefox Build (Generic Tasks in TaskCluster)</title>
         <link rel="stylesheet" type="text/css"
          href="http://www.erranderr.com/blog/theme/css/main.css">
          </link>
@@ -33,11 +33,16 @@
                     <li><a href="http://www.erranderr.com/blog/feeds/all.atom.xml" type="application/atom+xml" rel="alternate" alt="RSS Feed">Feed</a></li>
                 </ul></nav>
         </header><!-- /#banner -->
+<section id="content" class="body">
+  <article>
+    <header>
+      <h1 class="entry-title">
+        <a href="http://www.erranderr.com/blog/taskcluster-generic-tasks.html" rel="bookmark"
+           title="Permalink to Not Testing a Firefox Build (Generic Tasks in TaskCluster)">Not Testing a Firefox Build (Generic Tasks in&nbsp;TaskCluster)</a></h1>
+    </header>
 
-            <aside id="featured" class="body">
-                <article>
-                    <h1 class="entry-title"><a href="http://www.erranderr.com/blog/taskcluster-generic-tasks.html">Not Testing a Firefox Build (Generic Tasks in&nbsp;TaskCluster)</a></h1>
-                    <p>A few months ago I wrote about my <a href="http://www.erranderr.com/blog/taskcluster-learning.html">tentative setup</a> of a TaskCluster task that was neither a build nor a test. Since then, gps has implemented <a href="https://groups.google.com/forum/#!searchin/mozilla.dev.platform/generic$20task/mozilla.dev.platform/bNYp2HDyeqU/tg4mnGHEAwAJ">&#8220;generic&#8221; in-tree tasks</a> so I <a href="https://bugzilla.mozilla.org/show_bug.cgi?id=1227367#c116">adapted my initial work</a> to take advantage of&nbsp;that.</p>
+    <div class="entry-content">
+      <p>A few months ago I wrote about my <a href="http://www.erranderr.com/blog/taskcluster-learning.html">tentative setup</a> of a TaskCluster task that was neither a build nor a test. Since then, gps has implemented <a href="https://groups.google.com/forum/#!searchin/mozilla.dev.platform/generic$20task/mozilla.dev.platform/bNYp2HDyeqU/tg4mnGHEAwAJ">&#8220;generic&#8221; in-tree tasks</a> so I <a href="https://bugzilla.mozilla.org/show_bug.cgi?id=1227367#c116">adapted my initial work</a> to take advantage of&nbsp;that.</p>
 <h1>Triggered by file&nbsp;changes</h1>
 <p>All along I wanted to run some in-tree tests without having them wait around for a Firefox build or any other dependencies they don&#8217;t need. So I originally implemented this task as a <a href="http://www.erranderr.com/blog/taskcluster-learning.html#scheduling_summary">&#8220;build&#8221;</a> so that it would get scheduled for every incoming changeset in Mozilla&#8217;s&nbsp;repositories. </p>
 <p>But forget &#8220;builds&#8221;, forget &#8220;tests&#8221; &#8212; now there&#8217;s a third category of tasks that we&#8217;ll call &#8220;generic&#8221; and it&#8217;s exactly what I&nbsp;need. </p>
@@ -55,7 +60,8 @@
 <h2>Why not the desktop-test&nbsp;image?</h2>
 <p>But we can also run arbitrary mozharness scripts thanks to the configuration in the desktop-test docker image! Yes, and all of that configuration is geared toward testing a Firefox binary, which implies downloading tools that my task either doesn&#8217;t need or already has access to in the source tree. Now we have a lighter-weight option for executing tests that don&#8217;t exercise&nbsp;Firefox.</p>
 <h2>Why not&nbsp;mach?</h2>
-<p>In my lazy work-in-progress, I had originally executed the Marionette harness tests via a simple call to mach, yet now I have this crazy chain of shell scripts that leads all the way mozharness. The mach command didn&#8217;t disappear &#8212; you can run Marionette harness tests with <code>./mach python-test ...</code>. However, mozharness provides clearer control of Python dependencies, appropriate handling of return codes to report test results to Treeherder, and I can write a job-specific script and&nbsp;configuration.</p><footer class="post-info">
+<p>In my lazy work-in-progress, I had originally executed the Marionette harness tests via a simple call to mach, yet now I have this crazy chain of shell scripts that leads all the way mozharness. The mach command didn&#8217;t disappear &#8212; you can run Marionette harness tests with <code>./mach python-test ...</code>. However, mozharness provides clearer control of Python dependencies, appropriate handling of return codes to report test results to Treeherder, and I can write a job-specific script and&nbsp;configuration.</p>
+<footer class="post-info">
         <abbr class="published" title="2016-05-02T00:00:00-04:00">
                 Date: 02 May 2016
         </abbr>
@@ -68,29 +74,10 @@
                 By                         <a class="url fn" href="http://www.erranderr.com/blog/author/maja-frydrychowicz.html">Maja Frydrychowicz</a>
         </address>
 <p>tags: <a href="http://www.erranderr.com/blog/tag/mozilla.html">mozilla</a> <a href="http://www.erranderr.com/blog/tag/foss.html">foss</a> <a href="http://www.erranderr.com/blog/tag/ci.html">ci</a> <a href="http://www.erranderr.com/blog/tag/automation.html">automation</a> <a href="http://www.erranderr.com/blog/tag/taskcluster.html">taskcluster</a> </p>
-</footer><!-- /.post-info -->                </article>
-            </aside><!-- /#featured -->
-                <section id="content" class="body">
-                    <h1 class='first_heading'>Other articles</h1>
+</footer><!-- /.post-info -->    </div><!-- /.entry-content -->
 
-                    <ol id="posts-list" class="hfeed">
-
-            <li><article> <!-- class="hentry" -->
-                <header>
-                    <p><a href="http://www.erranderr.com/blog/taskcluster-learning.html" rel="bookmark"
-                           title="Permalink to First Experiment with TaskCluster">First Experiment with&nbsp;TaskCluster</a></p>
-                </header>
-
-                <!--
-                <div class="entry-content">
-                 include 'article_infos.html' Missing \{\%
-                 article.summary Missing \{\{
-                <a class="readmore" href="http://www.erranderr.com/blog/taskcluster-learning.html">read more</a>
-                </div> -->
-                <!-- /.entry-content -->
-            </article></li>
-                </ol><!-- /#posts-list -->
-                </section><!-- /#content -->
+  </article>
+</section>
 <!--                    <section id="twitter-timeline" class="body">
                 <h1><a href="https://twitter.com/@impossibus">@impossibus</a> on Twitter</h1>
                 <div>

@@ -36,187 +36,59 @@
 
             <aside id="featured" class="body">
                 <article>
-                    <h1 class="entry-title"><a href="http://www.erranderr.com/blog/taskcluster-learning.html">First Experiment with&nbsp;TaskCluster</a></h1>
-                    <p><a href="http://docs.taskcluster.net/">TaskCluster</a> is a new-ish continuous integration system made at Mozilla. It manages the scheduling and execution of tasks based on a graph of their dependencies. It&#8217;s a general <span class="caps">CI</span> tool, and could be used for any kind of job, not just Mozilla&nbsp;things. </p>
-<p>However, the example I describe here refers to a Mozilla-centric use case of TaskCluster<sup id="fnref:1"><a class="footnote-ref" href="#fn:1" rel="footnote">1</a></sup>: tasks are run per check-in on the branches of Mozilla&#8217;s Mercurial repository and then results are posted to <a href="https://github.com/mozilla/treeherder">Treeherder</a>. For now, the tasks can be configured to run in Docker images (Linux), but other platforms are in the works<sup id="fnref:2"><a class="footnote-ref" href="#fn:2" rel="footnote">2</a></sup>. </p>
-<p>So, I want to schedule a task! I need to add a new task to the task graph that&#8217;s created for each revision submitted to hg.mozilla.org. (This is part of my work on deploying a suite of <a href="https://bugzilla.mozilla.org/show_bug.cgi?id=1227367">tests for the Marionette Python test runner</a>, i.e. testing the test harness&nbsp;itself.) </p>
-<p>The rest of this post describes what I learned while making <a href="https://hg.mozilla.org/try/rev/6b7479c4aa30">this work-in-progress</a>.</p>
-<h1>There are builds and there are&nbsp;tests</h1>
-<p>mozilla-taskcluster operates based on the info under <a href="https://dxr.mozilla.org/mozilla-central/source/testing/taskcluster/tasks"><code>testing/taskcluster/tasks</code></a> in Mozilla&#8217;s source tree, where there are yaml files that describe tasks. Specific tasks can inherit common configuration options from base yaml&nbsp;files. </p>
-<p>The yaml files are organized into two main categories of tasks: builds and tests. This is just a convention in mozilla-taskcluster about how to group task configurations; <span class="caps">TC</span> itself doesn&#8217;t actually know or care whether a task is a build or a&nbsp;test.</p>
-<p>The task I&#8217;m creating doesn&#8217;t quite fit into either category: it runs harness tests that just exercise the Python runner code in <a href="http://marionette-client.readthedocs.org">marionette_client</a>, so I only need a source checkout, not a Firefox build. I&#8217;d like these tests to run quickly without having to wait around for a build. Another example of such a task is the recently-created <a href="https://hg.mozilla.org/mozilla-central/rev/4b34c9d1a31a">ESLint task</a>.</p>
-<h1>Scheduling a&nbsp;task</h1>
-<p>Just adding a yaml file that describes your new task under <code>testing/taskcluster/tasks</code> isn&#8217;t enough to get it scheduled: you must also add it to the list of tasks in <a href="https://dxr.mozilla.org/mozilla-central/source/testing/taskcluster/tasks/branches/base_jobs.yml"><code>base_jobs.yml</code></a>, and define an identifier for your task in <a href="https://dxr.mozilla.org/mozilla-central/source/testing/taskcluster/tasks/branches/base_job_flags.yml"><code>base_job_flags.yml</code></a>. This identifier is used in <code>base_jobs.yml</code>, and also by people who want to run your task when pushing to <a href="https://wiki.mozilla.org/ReleaseEngineering/TryServer">try</a>.</p>
-<p>How does scheduling work? First a <a href="http://docs.taskcluster.net/introduction/getting-started/#decision-tasks-and-task-graphs">decision task</a> generates a <em>task graph</em>, which describes all the tasks and their relationships. More precisely, it looks at <code>base_jobs.yml</code> and other yaml files in <code>testing/taskcluster/tasks</code> and spits out a json artifact, <code>graph.json</code><sup id="fnref:3"><a class="footnote-ref" href="#fn:3" rel="footnote">3</a></sup>. Then, <code>graph.json</code> gets sent to <span class="caps">TC</span>&#8217;s <a href="http://docs.taskcluster.net/queue/api-docs/#createTask"><code>createTask</code></a> endpoint, which takes care of the actual&nbsp;scheduling.  </p>
-<p>In the excerpt below, you can see a task definition with a <code>requires</code> field and you can recognize a lot of fields that are in common with the &#8216;task&#8217; section of the yaml files under <code>testing/taskcluster/tasks/</code>.</p>
-<div class="highlight"><pre><span class="p">{</span>
-<span class="s2">&quot;tasks&quot;</span><span class="o">:</span> <span class="p">[</span>
-    <span class="p">{</span>
-      <span class="s2">&quot;requires&quot;</span><span class="o">:</span> <span class="p">[</span>
-        <span class="c1">// id of a build task that this task depends on</span>
-        <span class="s2">&quot;fZ42HVdDQ-KFFycr9PxptA&quot;</span>  
-      <span class="p">],</span> 
-      <span class="s2">&quot;task&quot;</span><span class="o">:</span> <span class="p">{</span>
-        <span class="s2">&quot;taskId&quot;</span><span class="o">:</span> <span class="s2">&quot;c2VD_eCgQyeUDVOjsmQZSg&quot;</span>
-        <span class="s2">&quot;extra&quot;</span><span class="o">:</span> <span class="p">{</span>
-          <span class="s2">&quot;treeherder&quot;</span><span class="o">:</span> <span class="p">{</span>
-              <span class="s2">&quot;groupName&quot;</span><span class="o">:</span> <span class="s2">&quot;Reftest&quot;</span><span class="p">,</span> 
-              <span class="s2">&quot;groupSymbol&quot;</span><span class="o">:</span> <span class="s2">&quot;tc-R&quot;</span><span class="p">,</span> 
-          <span class="p">},</span> 
-        <span class="p">},</span> 
-        <span class="s2">&quot;metadata&quot;</span><span class="o">:</span> <span class="p">{</span>
-          <span class="s2">&quot;description&quot;</span><span class="o">:</span> <span class="s2">&quot;Reftest test run 1&quot;</span><span class="p">,</span> 
-          <span class="s2">&quot;name&quot;</span><span class="o">:</span> <span class="s2">&quot;[TC] Reftest&quot;</span><span class="p">,</span> 
-        <span class="c1">//...</span>
-  <span class="p">]</span>
-<span class="p">}</span>
-</pre></div>
-
-
-<p>For now at least, a major assumption in the task-graph creation process seems to be that <em>test</em> tasks can depend on <em>build</em> tasks and <em>build</em> tasks don&#8217;t really<sup id="fnref:4"><a class="footnote-ref" href="#fn:4" rel="footnote">4</a></sup> depend on anything.&nbsp;So:</p>
+                    <h1 class="entry-title"><a href="http://www.erranderr.com/blog/taskcluster-generic-tasks.html">Not Testing a Firefox Build (Generic Tasks in&nbsp;TaskCluster)</a></h1>
+                    <p>A few months ago I wrote about my <a href="http://www.erranderr.com/blog/taskcluster-learning.html">tentative setup</a> of a TaskCluster task that was neither a build nor a test. Since then, gps has implemented <a href="https://groups.google.com/forum/#!searchin/mozilla.dev.platform/generic$20task/mozilla.dev.platform/bNYp2HDyeqU/tg4mnGHEAwAJ">&#8220;generic&#8221; in-tree tasks</a> so I <a href="https://bugzilla.mozilla.org/show_bug.cgi?id=1227367#c116">adapted my initial work</a> to take advantage of&nbsp;that.</p>
+<h1>Triggered by file&nbsp;changes</h1>
+<p>All along I wanted to run some in-tree tests without having them wait around for a Firefox build or any other dependencies they don&#8217;t need. So I originally implemented this task as a <a href="http://www.erranderr.com/blog/taskcluster-learning.html#scheduling_summary">&#8220;build&#8221;</a> so that it would get scheduled for every incoming changeset in Mozilla&#8217;s&nbsp;repositories. </p>
+<p>But forget &#8220;builds&#8221;, forget &#8220;tests&#8221; &#8212; now there&#8217;s a third category of tasks that we&#8217;ll call &#8220;generic&#8221; and it&#8217;s exactly what I&nbsp;need. </p>
+<p>In <a href="https://hg.mozilla.org/mozilla-central/diff/e4ea9261d5bb/testing/taskcluster/tasks/branches/base_jobs.yml">base_jobs.yml</a> I say, &#8220;hey, here&#8217;s a new task called <code>marionette-harness</code> &#8212; run it whenever there&#8217;s a change under (branch)/testing/marionette/harness&#8221;. Of course, I can also just trigger the task with try syntax like <code>try: -p linux64_tc -j marionette-harness -u none -t none</code>.</p>
+<p>When the task is triggered, a chain of events&nbsp;follows: </p>
 <ul>
-<li>If you want your tasks to run for every push to a Mozilla hg branch, add it to the list of <strong>builds</strong> in <code>base_jobs.yml</code>. </li>
-<li>If you want your task to run after certain build tasks succeed, add it to the list of <strong>tests</strong> in <code>base_jobs.yml</code> and specify which build tasks it depends&nbsp;on.</li>
-<li>Other than the above, I don&#8217;t see any way to specify a dependency between task A and task B in <code>testing/taskcluster/tasks</code>.</li>
+<li><code>marionette-harness</code> is defined by <a href="https://hg.mozilla.org/mozilla-central/file/e4ea9261d5bb/testing/taskcluster/tasks/tests/harness_marionette.yml">harness_marionette.yml</a>, which depends on <a href="https://hg.mozilla.org/mozilla-central/file/e4ea9261d5bb/testing/taskcluster/tasks/harness_test.yml">harness_test.yml</a></li>
+<li><a href="https://hg.mozilla.org/mozilla-central/file/e4ea9261d5bb/testing/taskcluster/tasks/harness_test.yml">harness_test.yml</a> says to run <a href="https://hg.mozilla.org/mozilla-central/diff/e4ea9261d5bb/testing/docker/desktop-build/bin/build.sh">build.sh</a> with the appropriate mozilla branch and&nbsp;revision.</li>
+<li><a href="https://hg.mozilla.org/mozilla-central/file/e4ea9261d5bb/testing/taskcluster/tasks/tests/harness_marionette.yml">harness_marionette.yml</a> sets more environment variables and parameters for build.sh to use (<code>JOB_SCRIPT</code>, <code>MOZHARNESS_SCRIPT</code>,&nbsp;etc.)</li>
+<li>So build.sh checks out the source tree and executes <a href="https://hg.mozilla.org/mozilla-central/diff/e4ea9261d5bb/testing/taskcluster/scripts/tester/harness-test-linux.sh">harness-test-linux.sh</a> (<code>JOB_SCRIPT</code>)&#8230;</li>
+<li>&#8230;which in turn executes <a href="https://hg.mozilla.org/mozilla-central/file/1e0b4e27bd51/testing/mozharness/scripts/marionette_harness_tests.py">marionette_harness_tests.py</a> (<code>MOZHARNESS_SCRIPT</code>) with the parameters passed on by&nbsp;build.sh</li>
 </ul>
-<p>So, I added <code>marionette-harness</code> under <code>builds</code>. Recall, my task isn&#8217;t a build task, but it doesn&#8217;t depend on a build, so it&#8217;s not a test, so I&#8217;ll treat it like a&nbsp;build.</p>
-<div class="highlight"><pre><span class="c1"># in base_job_flags.yml</span>
-<span class="l l-Scalar l-Scalar-Plain">builds</span><span class="p p-Indicator">:</span>
-  <span class="c1"># ...</span>
-  <span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">marionette-harness</span>
-
-<span class="c1"># in base_jobs.yml</span>
-<span class="l l-Scalar l-Scalar-Plain">builds</span><span class="p p-Indicator">:</span>
-  <span class="c1"># ...</span>
-  <span class="l l-Scalar l-Scalar-Plain">marionette-harness</span><span class="p p-Indicator">:</span>
-    <span class="l l-Scalar l-Scalar-Plain">platforms</span><span class="p p-Indicator">:</span>
-      <span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">Linux64</span>
-    <span class="l l-Scalar l-Scalar-Plain">types</span><span class="p p-Indicator">:</span>
-      <span class="l l-Scalar l-Scalar-Plain">opt</span><span class="p p-Indicator">:</span>
-        <span class="l l-Scalar l-Scalar-Plain">task</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">tasks/tests/harness_marionette.yml</span>
-</pre></div>
-
-
-<p>This will allow me to trigger my task with the following try syntax: <code>try: -b o -p marionette-harness</code>.&nbsp;Cool.</p>
-<h1>Make your task do&nbsp;stuff</h1>
-<p>Now I have to add some stuff to <code>tasks/tests/harness_marionette.yml</code>. Many of my choices here are based on the work done for the <a href="https://hg.mozilla.org/mozilla-central/rev/4b34c9d1a31a">ESLint task</a>. I created a base task called <code>harness_test.yml</code> by mostly copying bits and pieces from the basic build task, <code>build.yml</code> and making a few small changes. The actual task, <code>harness_marionette.yml</code> inherits from <code>harness_test.yml</code> and defines specifics like Treeherder symbols and the command to&nbsp;run.</p>
-<h2>The&nbsp;command</h2>
-<p>The heart of the task is in <code>task.payload.command</code>. You could chain a bunch of shell commands together directly in this field of the yaml file, but it&#8217;s better not to. Instead, it&#8217;s common to call a TaskCluster-friendly shell script that&#8217;s available in your task&#8217;s environment. For example, the <a href="https://dxr.mozilla.org/mozilla-central/source/testing/docker/desktop-test"><code>desktop-test</code></a> docker image has a script called <code>test.sh</code> through which you can call the <a href="https://wiki.mozilla.org/ReleaseEngineering/Mozharness">mozharness</a> script for your tests. There&#8217;s a similar <code>build.sh</code> script on <code>desktop-build</code>. Both of these scripts depend on environment variables set elsewhere in your task definition, or in the Docker image used by your task. The environment might also provide utilities like <a href="http://tc-vcs.readthedocs.org/en/latest/">tc-vcs</a>, which is used for checking out source&nbsp;code.</p>
-<div class="highlight"><pre><span class="c1"># in harness_marionette.yml</span>
-<span class="l l-Scalar l-Scalar-Plain">payload</span><span class="p p-Indicator">:</span>
-  <span class="l l-Scalar l-Scalar-Plain">command</span><span class="p p-Indicator">:</span>
-    <span class="l l-Scalar l-Scalar-Plain">+ bash</span>
-    <span class="l l-Scalar l-Scalar-Plain">+ -cx</span>
-    <span class="l l-Scalar l-Scalar-Plain">+ &gt;</span>
-        <span class="l l-Scalar l-Scalar-Plain">tc-vcs checkout ./gecko {{base_repository}} {{head_repository}} {{head_rev}} {{head_ref}} &amp;&amp;</span>
-        <span class="l l-Scalar l-Scalar-Plain">cd gecko &amp;&amp;</span>
-        <span class="l l-Scalar l-Scalar-Plain">./mach marionette-harness-test</span>
-</pre></div>
-
-
-<p>My task&#8217;s <code>payload.command</code> should be moved into a custom shell script, but for now it just chains together the source checkout and a call to <a href="https://developer.mozilla.org/en-US/docs/Mozilla/Developer_guide/mach">mach</a>. It&#8217;s not terrible of me to use mach in this case because I expect my task to work in a build environment, but most tests would likely call&nbsp;mozharness.</p>
-<h1>Configuring the task&#8217;s&nbsp;environment</h1>
-<p>Where should the task run? What resources should it have access to? This was probably the hardest piece for me to figure&nbsp;out.</p>
-<h2>docker-worker</h2>
-<p>My task will run in a docker image using a <a href="http://docs.taskcluster.net/workers/docker-worker/">docker-worker</a><sup id="fnref:5"><a class="footnote-ref" href="#fn:5" rel="footnote">5</a></sup>. The image, called <code>desktop-build</code>, is defined in-tree under <a href="https://dxr.mozilla.org/mozilla-central/source/testing/docker/desktop-build"><code>testing/docker</code></a>. There are many other images defined there, but I only considered <code>desktop-build</code> versus <code>desktop-test</code>. I opted for <code>desktop-build</code> because <code>desktop-test</code> seems to contain mozharness-related stuff that I don&#8217;t need for&nbsp;now.</p>
-<div class="highlight"><pre><span class="c1"># harness_test.yml</span>
-<span class="l l-Scalar l-Scalar-Plain">image</span><span class="p p-Indicator">:</span>
-   <span class="l l-Scalar l-Scalar-Plain">type</span><span class="p p-Indicator">:</span> <span class="s">&#39;task-image&#39;</span>
-   <span class="l l-Scalar l-Scalar-Plain">path</span><span class="p p-Indicator">:</span> <span class="s">&#39;public/image.tar&#39;</span>
-   <span class="l l-Scalar l-Scalar-Plain">taskId</span><span class="p p-Indicator">:</span> <span class="s">&#39;{{#task_id_for_image}}desktop-build{{/task_id_for_image}}&#39;</span>
-</pre></div>
-
-
-<p>The image is stored as an artifact of another <span class="caps">TC</span> task, which makes it a &#8216;task-image&#8217;. Which artifact? The default is <code>public/image.tar</code>. Which task do I find the image in? The magic incantation <code>'{{#task_id_for_image}}desktop-build{{/task_id_for_image}}'</code> somehow<sup id="fnref:6"><a class="footnote-ref" href="#fn:6" rel="footnote">6</a></sup> obtains the correct <span class="caps">ID</span>, and if I look at a particular run of my task, the above snippet does indeed get populated with an actual <code>taskId</code>. </p>
-<div class="highlight"><pre><span class="s2">&quot;image&quot;</span><span class="o">:</span> <span class="p">{</span>
-  <span class="s2">&quot;path&quot;</span><span class="o">:</span> <span class="s2">&quot;public/image.tar&quot;</span><span class="p">,</span>
-  <span class="c1">// Mystery task that makes a desktop-build image for us. Thanks, mystery task!</span>
-  <span class="s2">&quot;taskId&quot;</span><span class="o">:</span> <span class="s2">&quot;aqt_YdmkTvugYB5b-OvvJw&quot;</span><span class="p">,</span> 
-  <span class="s2">&quot;type&quot;</span><span class="o">:</span> <span class="s2">&quot;task-image&quot;</span>
-<span class="p">}</span>
-</pre></div>
-
-
-<p>Snooping around in the handy <a href="https://tools.taskcluster.net/task-inspector/">Task Inspector</a>, I found that the magical mystery task is defined in <a href="https://dxr.mozilla.org/mozilla-central/source/testing/taskcluster/tasks/image.yml">image.yml</a> and runs <a href="https://dxr.mozilla.org/mozilla-central/source/testing/docker/image_builder/bin/build_image.sh"><code>build_image.sh</code></a>. Fun. It&#8217;s also quite convenient to <a href="http://docs.taskcluster.net/presentations/TC-102/#/images-00">define and test your own custom image</a>.</p>
-<h2>Other details that I mostly&nbsp;ignored</h2>
-<div class="highlight"><pre><span class="c1"># in harness_test.yml</span>
-<span class="l l-Scalar l-Scalar-Plain">scopes</span><span class="p p-Indicator">:</span>
-  <span class="c1"># Nearly all of our build tasks use tc-vcs</span>
-  <span class="p p-Indicator">-</span> <span class="s">&#39;docker-worker:cache:level-{{level}}-{{project}}-tc-vcs&#39;</span>
-<span class="l l-Scalar l-Scalar-Plain">cache</span><span class="p p-Indicator">:</span>
-   <span class="c1"># The taskcluster-vcs tooling stores the large clone caches in this</span>
-   <span class="c1"># directory and will reuse them for new requests this saves about 20s~</span>
-   <span class="c1"># and is the most generic cache possible.</span>
-   <span class="l l-Scalar l-Scalar-Plain">level-{{level}}-{{project}}-tc-vcs</span><span class="p p-Indicator">:</span> <span class="s">&#39;/home/worker/.tc-vcs&#39;</span>
-</pre></div>
-
-
-<ul>
-<li><em>Routes</em> allow your task to be looked up in the task index. This isn&#8217;t necessary in my case so I just omitted routes&nbsp;altogether.</li>
-<li><em>Scopes</em> are permissions for your tasks, and I just copied the scope that is used for checking out source&nbsp;code.</li>
-<li><em>workerType</em> is a configuration for managing the workers that run tasks. To me, this was a choice between <code>b2gtest</code> and <code>b2gbuild</code>, which aren&#8217;t specific to b2g anyway. <code>b2gtest</code> is more lightweight, I hear, which suits my harness-test task&nbsp;fine.</li>
-<li>I had to include a few dummy values under <code>extra</code> in <code>harness_test.yml</code>, like <code>build_name</code>, just because they are expected in <em>build</em> tasks. I don&#8217;t use these values for anything, but my task fails to run if I don&#8217;t include&nbsp;them.</li>
-</ul>
-<h1>Yay for trial and&nbsp;error</h1>
-<ul>
-<li>If you have syntax errors in your yaml, the Decision task will fail. If this happens during a try push, look under Job Details &gt; Inspect Task to fine useful error&nbsp;messages.</li>
-<li>Iterating on your task is pretty easy. Aside from pushing to try, you can <a href="http://docs.taskcluster.net/presentations/TC-101/#/run-locally-environment">run tasks locally using vagrant</a> and you can build a task graph locally as well with <code>mach taskcluster-graph</code>. </li>
-</ul>
-<h1>Resources</h1>
-<p>Blog posts from other TaskCluster users at&nbsp;Mozilla:</p>
-<ul>
-<li><a href="https://ehsanakhgari.org/blog/2015-09-29/my-experience-adding-new-build-type-taskcluster">https://ehsanakhgari.org/blog/2015-09-29/my-experience-adding-new-build-type-taskcluster</a></li>
-<li><a href="https://elvis314.wordpress.com/2015/11/09/adventures-in-task-cluster-running-tests-locally/">https://elvis314.wordpress.com/2015/11/09/adventures-in-task-cluster-running-tests-locally/</a></li>
-<li><a href="https://elvis314.wordpress.com/2015/11/11/adventures-in-task-cluster-running-a-custom-docker-image/">https://elvis314.wordpress.com/2015/11/11/adventures-in-task-cluster-running-a-custom-docker-image/</a></li>
-</ul>
-<p>There is lots of great documentation at <a href="https://docs.taskcluster.net">docs.taskcluster.net</a>, but these sections were especially useful to&nbsp;me:</p>
-<ul>
-<li><a href="http://docs.taskcluster.net/queue/api-docs/#createTask">createTask <span class="caps">API</span></a></li>
-<li><a href="http://docs.taskcluster.net/workers/">Workers</a></li>
-</ul>
-<h1>Acknowledgements</h1>
-<p>Thanks to <a href="http://code.v.igoro.us/">dustin</a>, pmoore and others for corrections and&nbsp;feedback.</p>
-<div class="footnote">
-<hr />
-<ol>
-<li id="fn:1">
-<p>This is accomplished in part thanks to <a href="http://blog.gregarndt.com/taskcluster/2015/08/05/demystifying-in-tree-scheduling/">mozilla-taskcluster</a>, a service that links Mozilla&#8217;s hg repo to TaskCluster and creates each decision task. More at <a href="http://docs.taskcluster.net/introduction/getting-started/#taskcluster-at-mozilla">TaskCluster at Mozilla</a>&#160;<a class="footnote-backref" href="#fnref:1" rev="footnote" title="Jump back to footnote 1 in the text">&#8617;</a></p>
-</li>
-<li id="fn:2">
-<p>Run tasks on any platform thanks to <a href="http://docs.taskcluster.net/workers/generic-worker/">generic worker</a>&#160;<a class="footnote-backref" href="#fnref:2" rev="footnote" title="Jump back to footnote 2 in the text">&#8617;</a></p>
-</li>
-<li id="fn:3">
-<p>To look at a <code>graph.json</code> artifact, go to <a href="http://treeherder.mozilla.org/">Treeherder</a>, click a green &#8216;D&#8217; job, then Job details &gt; Inspect Task, where you should find a list of artifacts.&#160;<a class="footnote-backref" href="#fnref:3" rev="footnote" title="Jump back to footnote 3 in the text">&#8617;</a></p>
-</li>
-<li id="fn:4">
-<p>It&#8217;s not <em>really</em> true that build tasks don&#8217;t depend on anything. Any task that uses a task-image depends on the task that creates the image. I&#8217;m sorry for saying &#8216;task&#8217; five times in every sentence, by the way.&#160;<a class="footnote-backref" href="#fnref:4" rev="footnote" title="Jump back to footnote 4 in the text">&#8617;</a></p>
-</li>
-<li id="fn:5">
-<p>&#8230;as opposed to a <a href="http://docs.taskcluster.net/workers/generic-worker/">generic worker</a>.&#160;<a class="footnote-backref" href="#fnref:5" rev="footnote" title="Jump back to footnote 5 in the text">&#8617;</a></p>
-</li>
-<li id="fn:6">
-<p><code>{{#task_id_for_image}}</code> is an example of a predefined variable that we can use in our <span class="caps">TC</span> yaml files. Where do they come from? How do they get populated? I don&#8217;t know.&#160;<a class="footnote-backref" href="#fnref:6" rev="footnote" title="Jump back to footnote 6 in the text">&#8617;</a></p>
-</li>
-</ol>
-</div><footer class="post-info">
-        <abbr class="published" title="2016-02-09T00:00:00-05:00">
-                Date: 09 February 2016
+<h1>For Tasks that Make Sense in a gecko Source&nbsp;Checkout</h1>
+<p>As you can see, I made the <code>build.sh</code> script in the <code>desktop-build</code> docker image execute an arbitrary in-tree <code>JOB_SCRIPT</code>, and I created <code>harness-test-linux.sh</code> to run mozharness within a gecko source&nbsp;checkout. </p>
+<h2>Why not the desktop-test&nbsp;image?</h2>
+<p>But we can also run arbitrary mozharness scripts thanks to the configuration in the desktop-test docker image! Yes, and all of that configuration is geared toward testing a Firefox binary, which implies downloading tools that my task either doesn&#8217;t need or already has access to in the source tree. Now we have a lighter-weight option for executing tests that don&#8217;t exercise&nbsp;Firefox.</p>
+<h2>Why not&nbsp;mach?</h2>
+<p>In my lazy work-in-progress, I had originally executed the Marionette harness tests via a simple call to mach, yet now I have this crazy chain of shell scripts that leads all the way mozharness. The mach command didn&#8217;t disappear &#8212; you can run Marionette harness tests with <code>./mach python-test ...</code>. However, mozharness provides clearer control of Python dependencies, appropriate handling of return codes to report test results to Treeherder, and I can write a job-specific script and&nbsp;configuration.</p><footer class="post-info">
+        <abbr class="published" title="2016-05-02T00:00:00-04:00">
+                Date: 02 May 2016
         </abbr>
 		<br />
-        <abbr class="modified" title="2016-02-16T00:00:00-05:00">
-                Last update: 16 February 2016
+        <abbr class="modified" title="2016-05-02T00:00:00-04:00">
+                Last update: 02 May 2016
         </abbr>
 
         <address class="vcard author">
                 By                         <a class="url fn" href="http://www.erranderr.com/blog/author/maja-frydrychowicz.html">Maja Frydrychowicz</a>
         </address>
-<p>tags: <a href="http://www.erranderr.com/blog/tag/mozilla.html">mozilla</a> <a href="http://www.erranderr.com/blog/tag/foss.html">foss</a> <a href="http://www.erranderr.com/blog/tag/ci.html">ci</a> <a href="http://www.erranderr.com/blog/tag/taskcluster.html">taskcluster</a> </p>
+<p>tags: <a href="http://www.erranderr.com/blog/tag/mozilla.html">mozilla</a> <a href="http://www.erranderr.com/blog/tag/foss.html">foss</a> <a href="http://www.erranderr.com/blog/tag/ci.html">ci</a> <a href="http://www.erranderr.com/blog/tag/automation.html">automation</a> <a href="http://www.erranderr.com/blog/tag/taskcluster.html">taskcluster</a> </p>
 </footer><!-- /.post-info -->                </article>
             </aside><!-- /#featured -->
                 <section id="content" class="body">
                     <h1 class='first_heading'>Other articles</h1>
 
                     <ol id="posts-list" class="hfeed">
+
+            <li><article> <!-- class="hentry" -->
+                <header>
+                    <p><a href="http://www.erranderr.com/blog/taskcluster-learning.html" rel="bookmark"
+                           title="Permalink to First Experiment with TaskCluster">First Experiment with&nbsp;TaskCluster</a></p>
+                </header>
+
+                <!--
+                <div class="entry-content">
+                 include 'article_infos.html' Missing \{\%
+                 article.summary Missing \{\{
+                <a class="readmore" href="http://www.erranderr.com/blog/taskcluster-learning.html">read more</a>
+                </div> -->
+                <!-- /.entry-content -->
+            </article></li>
 
             <li><article> <!-- class="hentry" -->
                 <header>
