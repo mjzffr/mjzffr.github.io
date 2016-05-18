@@ -36,44 +36,52 @@
 
             <aside id="featured" class="body">
                 <article>
-                    <h1 class="entry-title"><a href="http://www.erranderr.com/blog/taskcluster-generic-tasks.html">Not Testing a Firefox Build (Generic Tasks in&nbsp;TaskCluster)</a></h1>
-                    <p>A few months ago I wrote about my <a href="http://www.erranderr.com/blog/taskcluster-learning.html">tentative setup</a> of a TaskCluster task that was neither a build nor a test. Since then, gps has implemented <a href="https://groups.google.com/forum/#!searchin/mozilla.dev.platform/generic$20task/mozilla.dev.platform/bNYp2HDyeqU/tg4mnGHEAwAJ">&#8220;generic&#8221; in-tree tasks</a> so I <a href="https://bugzilla.mozilla.org/show_bug.cgi?id=1227367#c116">adapted my initial work</a> to take advantage of&nbsp;that.</p>
-<h1>Triggered by file&nbsp;changes</h1>
-<p>All along I wanted to run some in-tree tests without having them wait around for a Firefox build or any other dependencies they don&#8217;t need. So I originally implemented this task as a <a href="http://www.erranderr.com/blog/taskcluster-learning.html#scheduling_summary">&#8220;build&#8221;</a> so that it would get scheduled for every incoming changeset in Mozilla&#8217;s&nbsp;repositories. </p>
-<p>But forget &#8220;builds&#8221;, forget &#8220;tests&#8221; &#8212; now there&#8217;s a third category of tasks that we&#8217;ll call &#8220;generic&#8221; and it&#8217;s exactly what I&nbsp;need. </p>
-<p>In <a href="https://hg.mozilla.org/mozilla-central/diff/e4ea9261d5bb/testing/taskcluster/tasks/branches/base_jobs.yml">base_jobs.yml</a> I say, &#8220;hey, here&#8217;s a new task called <code>marionette-harness</code> &#8212; run it whenever there&#8217;s a change under (branch)/testing/marionette/harness&#8221;. Of course, I can also just trigger the task with try syntax like <code>try: -p linux64_tc -j marionette-harness -u none -t none</code>.</p>
-<p>When the task is triggered, a chain of events&nbsp;follows: </p>
+                    <h1 class="entry-title"><a href="http://www.erranderr.com/blog/recurse-center-review.html">A Week of Reflection and Programming for&nbsp;Fun</a></h1>
+                    <p>I recently got to spend a week back at the heart of an <del>excellent</del> <del>delightful</del> inspiring technical community: <a href="http://www.recurse.com">Recurse Center</a> or <span class="caps">RC</span>. This friendly group consists mostly of programmers from around the world who have, at some point, participated in <span class="caps">RC</span>&#8217;s three-month &#8220;retreat&#8221; in New York City to work on whatever <a href="https://www.recurse.com/blog/82-what-people-do-at-the-recurse-center-apr-15">projects</a> happen to interest them.  The retreat&#8217;s motto is &#8220;never graduate&#8221;, and so participants continue to support each other&#8217;s technical growth and curiosity forever and&nbsp;ever. </p>
+<p>I&#8217;m an <span class="caps">RC</span> alum from 2014! <span class="caps">RC</span>&#8217;s retreat is how I ended up contributing to open source software and eventually gathering the courage to join Mozilla. Before <span class="caps">RC</span>, despite already having thousands of hours of programming and fancy math under my belt, I held myself back with doubts about whether I&#8217;m a &#8220;real programmer&#8221;, whatever that stereotype means. That subconscious negativity hasn&#8217;t magically disappeared, but I&#8217;ve had a lot of good experiences in the past few years to help me manage it. Today, <span class="caps">RC</span> helps me stay excited about learning all the things for the sake of learning all the&nbsp;things.</p>
+<p>A retreat at <span class="caps">RC</span> looks something like this: you put your life more-or-less on hold, move to <span class="caps">NYC</span>, and spend three months tinkering in a big, open office with around fifty fellow (thoughtful, kind, enthusiastic) programmers. During my 2014 retreat, I worked mostly on lowish-level networking things in Python, pair programmed on whatever else people happened to be working on, gave and received code review, chatted with wise <a href="http://marijnhaverbeke.nl/blog/recurse-center.html">&#8220;residents&#8221;</a>, attended spontaneous workshops, presentations and so&nbsp;on. </p>
+<p>Every May, alumni are invited to return to the <span class="caps">RC</span> space for a week, and this year I got to go! (Thanks, Mozilla!) It was awesome! Exclamation points! This past week felt like a tiny version of the 3-month retreat. After two years away, I felt right at home &#8212; that says a lot about the warm atmosphere <span class="caps">RC</span> manages to cultivate. My personal goal for the week was just to work in a language that&#8217;s relatively new to me - JavaScript - but I also happened to have really interesting conversations about things&nbsp;like:</p>
 <ul>
-<li><code>marionette-harness</code> is defined by <a href="https://hg.mozilla.org/mozilla-central/file/e4ea9261d5bb/testing/taskcluster/tasks/tests/harness_marionette.yml">harness_marionette.yml</a>, which depends on <a href="https://hg.mozilla.org/mozilla-central/file/e4ea9261d5bb/testing/taskcluster/tasks/harness_test.yml">harness_test.yml</a></li>
-<li><a href="https://hg.mozilla.org/mozilla-central/file/e4ea9261d5bb/testing/taskcluster/tasks/harness_test.yml">harness_test.yml</a> says to run <a href="https://hg.mozilla.org/mozilla-central/diff/e4ea9261d5bb/testing/docker/desktop-build/bin/build.sh">build.sh</a> with the appropriate mozilla branch and&nbsp;revision.</li>
-<li><a href="https://hg.mozilla.org/mozilla-central/file/e4ea9261d5bb/testing/taskcluster/tasks/tests/harness_marionette.yml">harness_marionette.yml</a> sets more environment variables and parameters for build.sh to use (<code>JOB_SCRIPT</code>, <code>MOZHARNESS_SCRIPT</code>,&nbsp;etc.)</li>
-<li>So build.sh checks out the source tree and executes <a href="https://hg.mozilla.org/mozilla-central/diff/e4ea9261d5bb/testing/taskcluster/scripts/tester/harness-test-linux.sh">harness-test-linux.sh</a> (<code>JOB_SCRIPT</code>)&#8230;</li>
-<li>&#8230;which in turn executes <a href="https://hg.mozilla.org/mozilla-central/file/1e0b4e27bd51/testing/mozharness/scripts/marionette_harness_tests.py">marionette_harness_tests.py</a> (<code>MOZHARNESS_SCRIPT</code>) with the parameters passed on by&nbsp;build.sh</li>
+<li>How to implement a basic&nbsp;debugger?</li>
+<li>How to improve the technical interview&nbsp;process?</li>
+<li>What holds developers back or slows them down? What unnecessary assumptions do we have about our tools and their&nbsp;limitations?</li>
 </ul>
-<h1>For Tasks that Make Sense in a gecko Source&nbsp;Checkout</h1>
-<p>As you can see, I made the <code>build.sh</code> script in the <code>desktop-build</code> docker image execute an arbitrary in-tree <code>JOB_SCRIPT</code>, and I created <code>harness-test-linux.sh</code> to run mozharness within a gecko source&nbsp;checkout. </p>
-<h2>Why not the desktop-test&nbsp;image?</h2>
-<p>But we can also run arbitrary mozharness scripts thanks to the configuration in the desktop-test docker image! Yes, and all of that configuration is geared toward testing a Firefox binary, which implies downloading tools that my task either doesn&#8217;t need or already has access to in the source tree. Now we have a lighter-weight option for executing tests that don&#8217;t exercise&nbsp;Firefox.</p>
-<h2>Why not&nbsp;mach?</h2>
-<p>In my lazy work-in-progress, I had originally executed the Marionette harness tests via a simple call to mach, yet now I have this crazy chain of shell scripts that leads all the way mozharness. The mach command didn&#8217;t disappear &#8212; you can run Marionette harness tests with <code>./mach python-test ...</code>. However, mozharness provides clearer control of Python dependencies, appropriate handling of return codes to report test results to Treeherder, and I can write a job-specific script and&nbsp;configuration.</p><footer class="post-info">
-        <abbr class="published" title="2016-05-02T00:00:00-04:00">
-                Date: 02 May 2016
+<p><span class="caps">RC</span>&#8217;s retreat is a great environment for growing as a developer, but I don&#8217;t want to make it sound like it&#8217;s all effortless whimsy. Both the hardest and most wonderful part of <span class="caps">RC</span> (and many other groups) is being surrounded by extremely impressive, positive people who never seem to struggle with anything. It&#8217;s easy to slip into showing off our knowledge or to get distracted by measuring ourselves against our peers. Sometimes this is impostor syndrome. Sometimes it&#8217;s the myth of the 10x developer. <span class="caps">RC</span> puts a lot of effort into being a <a href="https://www.recurse.com/diversity">safe space</a> where you can reveal your ignorance and ask questions, but insecurity can always be a&nbsp;challenge.</p>
+<p>Similarly, the main benefit of <span class="caps">RC</span> is learning from your peers, but the usual ways of doing this seem to be geared toward people who are outgoing and think out loud. These are valuable skills, but when we focus on them exclusively we don&#8217;t hear from people who have different defaults. There is also little structure provided by <span class="caps">RC</span> so you are free to self-organize and exchange ideas as you deem appropriate. The risk is that quiet people are allowed to hide in their quiet corners, and then <a href="https://hbr.org/2016/04/run-meetings-that-are-fair-to-introverts-women-and-remote-workers">everyone misses out on their contributions</a>. I think <span class="caps">RC</span> makes efforts to balance this out, but the overall lack of structure means you really have to take charge of how you learn from others. I&#8217;m definitely better at this than I used to&nbsp;be.</p>
+<p><span class="caps">RC</span> is an experiment and it&#8217;s always changing. Although at this point my involvement is mostly passive, I&#8217;m glad to be a part of it. I love that I&#8217;ve been able to work closely with vastly different people, getting an inside look at their work habits and ways of thinking. Now, long after my &#8220;never-graduation&#8221;, the <span class="caps">RC</span> community continues to expose me to a variety of  ideas about technology and learning in a way that makes us all get better. Continuous improvement,&nbsp;yeah! </p><footer class="post-info">
+        <abbr class="published" title="2016-05-17T00:00:00-04:00">
+                Date: 17 May 2016
         </abbr>
 		<br />
-        <abbr class="modified" title="2016-05-02T00:00:00-04:00">
-                Last update: 02 May 2016
+        <abbr class="modified" title="2016-05-18T00:00:00-04:00">
+                Last update: 18 May 2016
         </abbr>
 
         <address class="vcard author">
                 By                         <a class="url fn" href="http://www.erranderr.com/blog/author/maja-frydrychowicz.html">Maja Frydrychowicz</a>
         </address>
-<p>tags: <a href="http://www.erranderr.com/blog/tag/mozilla.html">mozilla</a> <a href="http://www.erranderr.com/blog/tag/foss.html">foss</a> <a href="http://www.erranderr.com/blog/tag/ci.html">ci</a> <a href="http://www.erranderr.com/blog/tag/automation.html">automation</a> <a href="http://www.erranderr.com/blog/tag/taskcluster.html">taskcluster</a> </p>
+<p>tags: <a href="http://www.erranderr.com/blog/tag/mozilla.html">mozilla</a> <a href="http://www.erranderr.com/blog/tag/feelings.html">feelings</a> <a href="http://www.erranderr.com/blog/tag/learning.html">learning</a> </p>
 </footer><!-- /.post-info -->                </article>
             </aside><!-- /#featured -->
                 <section id="content" class="body">
                     <h1 class='first_heading'>Other articles</h1>
 
                     <ol id="posts-list" class="hfeed">
+
+            <li><article> <!-- class="hentry" -->
+                <header>
+                    <p><a href="http://www.erranderr.com/blog/taskcluster-generic-tasks.html" rel="bookmark"
+                           title="Permalink to Not Testing a Firefox Build (Generic Tasks in TaskCluster)">Not Testing a Firefox Build (Generic Tasks in&nbsp;TaskCluster)</a></p>
+                </header>
+
+                <!--
+                <div class="entry-content">
+                 include 'article_infos.html' Missing \{\%
+                 article.summary Missing \{\{
+                <a class="readmore" href="http://www.erranderr.com/blog/taskcluster-generic-tasks.html">read more</a>
+                </div> -->
+                <!-- /.entry-content -->
+            </article></li>
 
             <li><article> <!-- class="hentry" -->
                 <header>
