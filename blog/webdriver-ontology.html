@@ -4,7 +4,7 @@
         <meta name="author" content="Maja Frydrychowicz" />
         <!--<meta name="viewport" content="width=device-width, initial-scale=1"/>-->
         <meta charset="utf-8" />
-        <title>err &err - misc</title>
+        <title>Untangling WebDriver and the Browser Automation Landscape I Live In</title>
         <link rel="stylesheet" type="text/css"
          href="http://www.erranderr.com/blog/theme/css/main.css">
          </link>
@@ -33,11 +33,16 @@
                     <li><a href="http://www.erranderr.com/blog/feeds/all.atom.xml" type="application/atom+xml" rel="alternate" alt="RSS Feed">Feed</a></li>
                 </ul></nav>
         </header><!-- /#banner -->
+<section id="content" class="body">
+  <article>
+    <header>
+      <h1 class="entry-title">
+        <a href="http://www.erranderr.com/blog/webdriver-ontology.html" rel="bookmark"
+           title="Permalink to Untangling WebDriver and the Browser Automation Landscape I Live In">Untangling WebDriver and the Browser Automation Landscape I Live&nbsp;In</a></h1>
+    </header>
 
-            <aside id="featured" class="body">
-                <article>
-                    <h1 class="entry-title"><a href="http://www.erranderr.com/blog/webdriver-ontology.html">Untangling WebDriver and the Browser Automation Landscape I Live&nbsp;In</a></h1>
-                    <p>This piece is about too few names for too many things, as well as a kind of origin story for a web standard. For the past year or so, I&#8217;ve been contributing to a Mozilla project broadly named Marionette &#8212; <a href="http://vakila.github.io/blog/marionette-act-i-automation/">a set of tools for automating and testing Gecko-based browsers like Firefox</a>. Marionette is part of a larger browser automation universe that I&#8217;ve managed to mostly ignore so far, but the time has finally come to make sense of&nbsp;it.</p>
+    <div class="entry-content">
+      <p>This piece is about too few names for too many things, as well as a kind of origin story for a web standard. For the past year or so, I&#8217;ve been contributing to a Mozilla project broadly named Marionette &#8212; <a href="http://vakila.github.io/blog/marionette-act-i-automation/">a set of tools for automating and testing Gecko-based browsers like Firefox</a>. Marionette is part of a larger browser automation universe that I&#8217;ve managed to mostly ignore so far, but the time has finally come to make sense of&nbsp;it.</p>
 <p>The main challenge for me has been nailing down imprecise terms that have changed over time. From my perspective, &#8220;Marionette&#8221; may refer to any combination of two to four things, and it&#8217;s related to equally vague names like &#8220;Selenium&#8221; and &#8220;WebDriver&#8221;&#8230; and then there are things like &#8220;FirefoxDriver&#8221; and &#8220;geckodriver&#8221;. Blargh. Untangling&nbsp;needed.</p>
 <p><em>Aside: integrating a new team member (like, say, a volunteer contributor or an intern) is the best! They ask big questions and you get to teach them things, which leads to filling in your own knowledge. Everyone&nbsp;wins.</em></p>
 <h2>The <span class="caps">W3C</span> WebDriver&nbsp;Specification</h2>
@@ -97,7 +102,8 @@ link.click()
 <p>Fun fact: Marionette is not only used for &#8220;Marionette Tests&#8221; at Mozilla. The client/server are also used to instrument Firefox for other test automation like mochitests and Web Platform Tests. &#160;<a class="footnote-backref" href="#fnref:6" rev="footnote" title="Jump back to footnote 6 in the text">&#8617;</a></p>
 </li>
 </ol>
-</div><footer class="post-info">
+</div>
+<footer class="post-info">
         <abbr class="published" title="2016-07-12T00:00:00-04:00">
                 Date: 12 July 2016
         </abbr>
@@ -110,164 +116,10 @@ link.click()
                 By                         <a class="url fn" href="http://www.erranderr.com/blog/author/maja-frydrychowicz.html">Maja Frydrychowicz</a>
         </address>
 
-</footer><!-- /.post-info -->                </article>
-            </aside><!-- /#featured -->
-                <section id="content" class="body">
-                    <h1 class='first_heading'>Other articles</h1>
+</footer><!-- /.post-info -->    </div><!-- /.entry-content -->
 
-                    <ol id="posts-list" class="hfeed">
-
-            <li><article> <!-- class="hentry" -->
-                <header>
-                    <p><a href="http://www.erranderr.com/blog/recurse-center-review.html" rel="bookmark"
-                           title="Permalink to A Week of Reflection and Programming for Fun">A Week of Reflection and Programming for&nbsp;Fun</a></p>
-                </header>
-
-                <!--
-                <div class="entry-content">
-                 include 'article_infos.html' Missing \{\%
-                 article.summary Missing \{\{
-                <a class="readmore" href="http://www.erranderr.com/blog/recurse-center-review.html">read more</a>
-                </div> -->
-                <!-- /.entry-content -->
-            </article></li>
-
-            <li><article> <!-- class="hentry" -->
-                <header>
-                    <p><a href="http://www.erranderr.com/blog/taskcluster-generic-tasks.html" rel="bookmark"
-                           title="Permalink to Not Testing a Firefox Build (Generic Tasks in TaskCluster)">Not Testing a Firefox Build (Generic Tasks in&nbsp;TaskCluster)</a></p>
-                </header>
-
-                <!--
-                <div class="entry-content">
-                 include 'article_infos.html' Missing \{\%
-                 article.summary Missing \{\{
-                <a class="readmore" href="http://www.erranderr.com/blog/taskcluster-generic-tasks.html">read more</a>
-                </div> -->
-                <!-- /.entry-content -->
-            </article></li>
-
-            <li><article> <!-- class="hentry" -->
-                <header>
-                    <p><a href="http://www.erranderr.com/blog/taskcluster-learning.html" rel="bookmark"
-                           title="Permalink to First Experiment with TaskCluster">First Experiment with&nbsp;TaskCluster</a></p>
-                </header>
-
-                <!--
-                <div class="entry-content">
-                 include 'article_infos.html' Missing \{\%
-                 article.summary Missing \{\{
-                <a class="readmore" href="http://www.erranderr.com/blog/taskcluster-learning.html">read more</a>
-                </div> -->
-                <!-- /.entry-content -->
-            </article></li>
-
-            <li><article> <!-- class="hentry" -->
-                <header>
-                    <p><a href="http://www.erranderr.com/blog/opw-snapshot.html" rel="bookmark"
-                           title="Permalink to Snapshots from my OPW Internship with Mozilla QA">Snapshots from my <span class="caps">OPW</span> Internship with Mozilla <span class="caps">QA</span></a></p>
-                </header>
-
-                <!--
-                <div class="entry-content">
-                 include 'article_infos.html' Missing \{\%
-                 article.summary Missing \{\{
-                <a class="readmore" href="http://www.erranderr.com/blog/opw-snapshot.html">read more</a>
-                </div> -->
-                <!-- /.entry-content -->
-            </article></li>
-
-            <li><article> <!-- class="hentry" -->
-                <header>
-                    <p><a href="http://www.erranderr.com/blog/borked-migrations.html" rel="bookmark"
-                           title="Permalink to Database Migrations (“You know nothing, Version Control.”)">Database Migrations (&#8220;You know nothing, Version&nbsp;Control.&#8221;)</a></p>
-                </header>
-
-                <!--
-                <div class="entry-content">
-                 include 'article_infos.html' Missing \{\%
-                 article.summary Missing \{\{
-                <a class="readmore" href="http://www.erranderr.com/blog/borked-migrations.html">read more</a>
-                </div> -->
-                <!-- /.entry-content -->
-            </article></li>
-
-            <li><article> <!-- class="hentry" -->
-                <header>
-                    <p><a href="http://www.erranderr.com/blog/osb14.html" rel="bookmark"
-                           title="Permalink to Open Source Bridge 2014">Open Source Bridge&nbsp;2014</a></p>
-                </header>
-
-                <!--
-                <div class="entry-content">
-                 include 'article_infos.html' Missing \{\%
-                 article.summary Missing \{\{
-                <a class="readmore" href="http://www.erranderr.com/blog/osb14.html">read more</a>
-                </div> -->
-                <!-- /.entry-content -->
-            </article></li>
-
-            <li><article> <!-- class="hentry" -->
-                <header>
-                    <p><a href="http://www.erranderr.com/blog/one-and-done-osbrige.html" rel="bookmark"
-                           title="Permalink to “One and Done” comes to Open Source Bridge 2014!"><span class="dquo">&#8220;</span>One and Done&#8221; comes to Open Source Bridge&nbsp;2014!</a></p>
-                </header>
-
-                <!--
-                <div class="entry-content">
-                 include 'article_infos.html' Missing \{\%
-                 article.summary Missing \{\{
-                <a class="readmore" href="http://www.erranderr.com/blog/one-and-done-osbrige.html">read more</a>
-                </div> -->
-                <!-- /.entry-content -->
-            </article></li>
-
-            <li><article> <!-- class="hentry" -->
-                <header>
-                    <p><a href="http://www.erranderr.com/blog/bugzilla-github.html" rel="bookmark"
-                           title="Permalink to Project Management at Mozilla">Project Management at&nbsp;Mozilla</a></p>
-                </header>
-
-                <!--
-                <div class="entry-content">
-                 include 'article_infos.html' Missing \{\%
-                 article.summary Missing \{\{
-                <a class="readmore" href="http://www.erranderr.com/blog/bugzilla-github.html">read more</a>
-                </div> -->
-                <!-- /.entry-content -->
-            </article></li>
-
-            <li><article> <!-- class="hentry" -->
-                <header>
-                    <p><a href="http://www.erranderr.com/blog/remote-work.html" rel="bookmark"
-                           title="Permalink to Working Remotely is… Hard? Different? Strange?">Working Remotely is&#8230; Hard? Different?&nbsp;Strange?</a></p>
-                </header>
-
-                <!--
-                <div class="entry-content">
-                 include 'article_infos.html' Missing \{\%
-                 article.summary Missing \{\{
-                <a class="readmore" href="http://www.erranderr.com/blog/remote-work.html">read more</a>
-                </div> -->
-                <!-- /.entry-content -->
-            </article></li>
-
-            <li><article> <!-- class="hentry" -->
-                <header>
-                    <p><a href="http://www.erranderr.com/blog/applying-to-opw.html" rel="bookmark"
-                           title="Permalink to Dive In! Applying to the FOSS Outreach Program for Women">Dive In! Applying to the <span class="caps">FOSS</span> Outreach Program for&nbsp;Women</a></p>
-                </header>
-
-                <!--
-                <div class="entry-content">
-                 include 'article_infos.html' Missing \{\%
-                 article.summary Missing \{\{
-                <a class="readmore" href="http://www.erranderr.com/blog/applying-to-opw.html">read more</a>
-                </div> -->
-                <!-- /.entry-content -->
-            </article></li>
-                </ol><!-- /#posts-list -->
-                </section><!-- /#content -->
+  </article>
+</section>
 <!--                    <section id="twitter-timeline" class="body">
                 <h1><a href="https://twitter.com/@impossibus">@impossibus</a> on Twitter</h1>
                 <div>
