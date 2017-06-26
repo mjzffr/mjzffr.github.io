@@ -65,7 +65,7 @@
 </ol>
 <p>At some point Rainbows will encounter Django or South errors, depending on the nature of the migrations, because the database doesn&#8217;t match the expected schema. No worries, though, it&#8217;s git, it&#8217;s South: you can go back in time and fix&nbsp;things.</p>
 <p>I was recently in Rainbows&#8217; position. I finally noticed that something was wrong with my database when South started refusing to apply the latest migration from upstream, telling me &#8220;Sorry! I can&#8217;t drop table TaskArea, it doesn&#8217;t&nbsp;exist!&#8221; </p>
-<div class="highlight"><pre><span class="n">tasks</span><span class="o">:</span><span class="mi">0011</span><span class="n">_auto__del_taskarea__del_field_task_area__add_field_taskkeyword_name</span>
+<div class="highlight"><pre><span></span><span class="n">tasks</span><span class="o">:</span><span class="mi">0011</span><span class="n">_auto__del_taskarea__del_field_task_area__add_field_taskkeyword_name</span>
 <span class="n">FATAL</span> <span class="n">ERROR</span> <span class="o">-</span> <span class="n">The</span> <span class="n">following</span> <span class="n">SQL</span> <span class="n">query</span> <span class="n">failed</span><span class="o">:</span> <span class="n">DROP</span> <span class="n">TABLE</span> <span class="n">tasks_taskarea</span> <span class="n">CASCADE</span><span class="o">;</span>
 <span class="n">The</span> <span class="n">error</span> <span class="n">was</span><span class="o">:</span> <span class="o">(</span><span class="mi">1051</span><span class="o">,</span> <span class="s2">&quot;Unknown table &#39;tasks_taskarea&#39;&quot;</span><span class="o">)</span>
 <span class="o">&gt;</span><span class="n">snip</span>
@@ -76,12 +76,12 @@
 
 <p>In my instance of the Sparkles-Rainbows story, Migration 3 and Migration 5 both drop the TaskArea table; I&#8217;m trying to apply Migration 5, and South  grumbles in response because I had never reversed Migration 3. As far as South knows, there&#8217;s no such thing as a TaskArea&nbsp;table. </p>
 <p>Let&#8217;s take a look at my migration history, which is conveniently stored in the database&nbsp;itself:</p>
-<div class="highlight"><pre><span class="k">select</span> <span class="n">migration</span> <span class="k">from</span> <span class="n">south_migrationhistory</span> <span class="k">where</span> <span class="n">app_name</span><span class="o">=</span><span class="s2">&quot;tasks&quot;</span><span class="p">;</span>
+<div class="highlight"><pre><span></span><span class="k">select</span> <span class="n">migration</span> <span class="k">from</span> <span class="n">south_migrationhistory</span> <span class="k">where</span> <span class="n">app_name</span><span class="o">=</span><span class="s2">&quot;tasks&quot;</span><span class="p">;</span>
 </pre></div>
 
 
 <p>The output is shown below. The lines of interest are <code>0010_auth__del</code> and <code>0010_auto__chg</code>; I&#8217;m trying to apply migration <code>0011</code> but I can&#8217;t, because it&#8217;s the same migration as <code>0010_auto__del</code>, which should have been reversed a few commits&nbsp;ago. </p>
-<div class="highlight"><pre>+------------------------------------------------------------------------------+
+<div class="highlight"><pre><span></span>+------------------------------------------------------------------------------+
 |  migration                                                                   |
 +------------------------------------------------------------------------------+
 |  0001_initial                                                                |
@@ -101,18 +101,18 @@
 
 <p>I want to migrate backwards until <code>0009</code>, but I can&#8217;t do that directly because the migration file for <code>0010_auto__del</code> is not part of <code>HEAD</code> anymore, just like Migration 3 in the story of Sparkles and Rainbows, so South doesn&#8217;t know what to do. However, that migration does exist in a previous commit, so let&#8217;s go back in&nbsp;time.</p>
 <p>I figure out which commit added the migration I need to&nbsp;reverse:</p>
-<div class="highlight"><pre><span class="c1"># Display commit log along with names of files affected by each commit. </span>
+<div class="highlight"><pre><span></span><span class="c1"># Display commit log along with names of files affected by each commit. </span>
 <span class="c1"># Once in less, I searched for &#39;0010_auto__del&#39; to get to the right commit.</span>
 git log --name-status <span class="p">|</span> less
 </pre></div>
 
 
 <p>With that key information, the following sequence of commands tidies everything&nbsp;up:</p>
-<div class="highlight"><pre><span class="c1"># Switch to the commit that added migration 0010_auto__del</span>
+<div class="highlight"><pre><span></span><span class="c1"># Switch to the commit that added migration 0010_auto__del</span>
 git checkout e67fe32c
 <span class="c1"># Migrate backward to a happy migration; I chose 0008 to be safe. </span>
 <span class="c1"># ./manage.py migrate [appname] [migration]</span>
-./manage.py migrate oneanddone.tasks 0008
+./manage.py migrate oneanddone.tasks <span class="m">0008</span>
 git checkout master
 <span class="c1"># Sync the database and migrate all the way forward using the most </span>
 <span class="c1"># up-to-date migrations.</span>
